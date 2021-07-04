@@ -2,7 +2,7 @@ package gorabbitmq
 
 import "github.com/streadway/amqp"
 
-type ConfigQueue struct {
+type MQConfigQueue struct {
 	Name             string
 	Durable          bool
 	DeleteWhenUnused bool
@@ -11,7 +11,7 @@ type ConfigQueue struct {
 	Args             amqp.Table
 }
 
-func NewQueue(channel *amqp.Channel, queue *ConfigQueue) (amqp.Queue, error) {
+func NewQueue(channel *amqp.Channel, queue *MQConfigQueue) (amqp.Queue, error) {
 	return channel.QueueDeclare(
 		queue.Name,
 		queue.Durable,
