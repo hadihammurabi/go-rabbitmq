@@ -60,3 +60,34 @@ func NewMQWithQueue(config *MQWithQueueConfig) (*MQWithQueue, error) {
 		Queue:      q,
 	}, nil
 }
+
+func NewMQWithExchange(config *MQWithExchangeConfig) (*MQWithExchange, error) {
+	mq, err := NewMQ(config.Connection)
+	if err != nil {
+		return nil, err
+	}
+
+	err = NewExchange(mq.Channel, config.Exchange)
+	if err != nil {
+		return nil, err
+	}
+
+	var q amqp.Queue
+	if config.Queue != nil {
+		_, err := NewQueue(mq.Channel, config.Queue)
+		if err != nil {
+			return nil, err
+		}
+
+		err = NewQueueBind(mq.Channel, config.Bind)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &MQWithExchange{
+		Connection: mq.Connection,
+		Channel:    mq.Channel,
+		Queue:      q,
+	}, nil
+}
