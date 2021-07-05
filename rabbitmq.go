@@ -2,6 +2,13 @@ package gorabbitmq
 
 import "github.com/streadway/amqp"
 
+type MQ interface {
+	GetConnection() *amqp.Connection
+	GetChannel() *amqp.Channel
+	Publish(publish *MQConfigPublish) error
+	Consume(queue amqp.Queue, consume *MQConfigConsume) error
+}
+
 type MQConfig struct {
 	Connection *MQConfigConnection
 	Exchange   *MQConfigExchange
@@ -26,7 +33,7 @@ type MQConfigPublish struct {
 	Message    amqp.Publishing
 }
 
-func NewMQ(config *MQConfigConnection) (*MQ, error) {
+func NewMQ(config *MQConfigConnection) (MQ, error) {
 	conn, err := NewConnection(config)
 	if err != nil {
 		return nil, err
@@ -37,57 +44,39 @@ func NewMQ(config *MQConfigConnection) (*MQ, error) {
 		return nil, err
 	}
 
-	return &MQ{
+	return &mqDefault{
 		Connection: conn,
 		Channel:    ch,
 	}, nil
 }
 
-func NewMQWithQueue(config *MQWithQueueConfig) (*MQWithQueue, error) {
-	mq, err := NewMQ(config.Connection)
-	if err != nil {
-		return nil, err
-	}
+// func NewMQWithExchange(config *MQWithExchangeConfig) (*MQWithExchange, error) {
+// 	mq, err := NewMQ(config.Connection)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	q, err := NewQueue(mq.Channel, config.Queue)
-	if err != nil {
-		return nil, err
-	}
+// 	err = NewExchange(mq.Channel, config.Exchange)
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	return &MQWithQueue{
-		Connection: mq.Connection,
-		Channel:    mq.Channel,
-		Queue:      q,
-	}, nil
-}
+// 	var q amqp.Queue
+// 	if config.Queue != nil {
+// 		_, err := NewQueue(mq.Channel, config.Queue)
+// 		if err != nil {
+// 			return nil, err
+// 		}
 
-func NewMQWithExchange(config *MQWithExchangeConfig) (*MQWithExchange, error) {
-	mq, err := NewMQ(config.Connection)
-	if err != nil {
-		return nil, err
-	}
+// 		err = NewQueueBind(mq.Channel, config.Bind)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 	}
 
-	err = NewExchange(mq.Channel, config.Exchange)
-	if err != nil {
-		return nil, err
-	}
-
-	var q amqp.Queue
-	if config.Queue != nil {
-		_, err := NewQueue(mq.Channel, config.Queue)
-		if err != nil {
-			return nil, err
-		}
-
-		err = NewQueueBind(mq.Channel, config.Bind)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return &MQWithExchange{
-		Connection: mq.Connection,
-		Channel:    mq.Channel,
-		Queue:      q,
-	}, nil
-}
+// 	return &MQWithExchange{
+// 		Connection: mq.Connection,
+// 		Channel:    mq.Channel,
+// 		Queue:      q,
+// 	}, nil
+// }

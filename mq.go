@@ -2,12 +2,20 @@ package gorabbitmq
 
 import "github.com/streadway/amqp"
 
-type MQ struct {
+type mqDefault struct {
 	Connection *amqp.Connection
 	Channel    *amqp.Channel
 }
 
-func (mq *MQ) Publish(publish *MQConfigPublish) error {
+func (mq *mqDefault) GetConnection() *amqp.Connection {
+	return mq.Connection
+}
+
+func (mq *mqDefault) GetChannel() *amqp.Channel {
+	return mq.Channel
+}
+
+func (mq *mqDefault) Publish(publish *MQConfigPublish) error {
 	return mq.Channel.Publish(
 		publish.Exchange,
 		publish.RoutingKey,
@@ -17,7 +25,7 @@ func (mq *MQ) Publish(publish *MQConfigPublish) error {
 	)
 }
 
-func (mq *MQ) Consume(queue amqp.Queue, consume *MQConfigConsume) error {
+func (mq *mqDefault) Consume(queue amqp.Queue, consume *MQConfigConsume) error {
 	qname := queue.Name
 	if consume.Name != "" {
 		qname = consume.Name
