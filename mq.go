@@ -7,12 +7,33 @@ type mqDefault struct {
 	Channel    *amqp.Channel
 }
 
+func NewMQ(config *MQConfigConnection) (MQ, error) {
+	conn, err := NewConnection(config)
+	if err != nil {
+		return nil, err
+	}
+
+	ch, err := conn.Channel()
+	if err != nil {
+		return nil, err
+	}
+
+	return &mqDefault{
+		Connection: conn,
+		Channel:    ch,
+	}, nil
+}
+
 func (mq *mqDefault) GetConnection() *amqp.Connection {
 	return mq.Connection
 }
 
 func (mq *mqDefault) GetChannel() *amqp.Channel {
 	return mq.Channel
+}
+
+func (mq *mqDefault) GetQueue() amqp.Queue {
+	return amqp.Queue{}
 }
 
 func (mq *mqDefault) Publish(publish *MQConfigPublish) error {

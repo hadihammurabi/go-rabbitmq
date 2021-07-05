@@ -2,7 +2,7 @@ package gorabbitmq
 
 import "github.com/streadway/amqp"
 
-type MQWithQueue struct {
+type mqWithQueue struct {
 	Connection *amqp.Connection
 	Channel    *amqp.Channel
 	Queue      amqp.Queue
@@ -13,7 +13,38 @@ type MQWithQueueConfig struct {
 	Queue      *MQConfigQueue
 }
 
-func (mq *MQWithQueue) Publish(publish *MQConfigPublish) error {
+func NewMQWithQueue(config *MQWithQueueConfig) (MQ, error) {
+	mq, err := NewMQ(config.Connection)
+	if err != nil {
+		return nil, err
+	}
+
+	channel := mq.GetChannel()
+	q, err := NewQueue(channel, config.Queue)
+	if err != nil {
+		return nil, err
+	}
+
+	return &mqWithQueue{
+		Connection: mq.GetConnection(),
+		Channel:    channel,
+		Queue:      q,
+	}, nil
+}
+
+func (mq *mqWithQueue) GetConnection() *amqp.Connection {
+	return mq.Connection
+}
+
+func (mq *mqWithQueue) GetChannel() *amqp.Channel {
+	return mq.Channel
+}
+
+func (mq *mqWithQueue) GetQueue() amqp.Queue {
+	return mq.Queue
+}
+
+func (mq *mqWithQueue) Publish(publish *MQConfigPublish) error {
 	return mq.Channel.Publish(
 		publish.Exchange,
 		publish.RoutingKey,
@@ -23,8 +54,8 @@ func (mq *MQWithQueue) Publish(publish *MQConfigPublish) error {
 	)
 }
 
-func (mq *MQWithQueue) Consume(consume *MQConfigConsume) error {
-	qname := mq.Queue.Name
+func (mq *mqWithQueue) Consume(q amqp.Queue, consume *MQConfigConsume) error {
+	qname := q.Name
 	if consume.Name != "" {
 		qname = consume.Name
 	}
