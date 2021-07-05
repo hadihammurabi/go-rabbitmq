@@ -8,12 +8,12 @@ type mqWithQueue struct {
 	Queue      amqp.Queue
 }
 
-type MQWithQueueConfig struct {
+type MQConfigWithQueue struct {
 	Connection *MQConfigConnection
 	Queue      *MQConfigQueue
 }
 
-func NewMQWithQueue(config *MQWithQueueConfig) (MQ, error) {
+func NewMQWithQueue(config *MQConfigWithQueue) (MQ, error) {
 	mq, err := NewMQ(config.Connection)
 	if err != nil {
 		return nil, err

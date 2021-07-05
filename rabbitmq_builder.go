@@ -40,7 +40,7 @@ func (builder *MQConfigBuilder) Build() (MQ, error) {
 	}
 
 	if builder.Queue != nil {
-		mq, err = NewMQWithQueue(&MQWithQueueConfig{
+		mq, err = NewMQWithQueue(&MQConfigWithQueue{
 			Connection: builder.Connection,
 			Queue:      builder.Queue,
 		})
