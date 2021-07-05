@@ -12,14 +12,14 @@ type mqWithExchange struct {
 	Queue      amqp.Queue
 }
 
-type MQWithExchangeConfig struct {
+type MQConfigWithExchange struct {
 	Connection *MQConfigConnection
 	Exchange   *MQConfigExchange
 	Queue      *MQConfigQueue
 	Bind       *MQConfigBind
 }
 
-func NewMQWithExchange(config *MQWithExchangeConfig) (MQ, error) {
+func NewMQWithExchange(config *MQConfigWithExchange) (MQ, error) {
 	if config.Connection == nil {
 		return nil, errors.New("connection configuration not given")
 	}

@@ -50,7 +50,7 @@ func (builder *MQConfigBuilder) Build() (MQ, error) {
 	}
 
 	if builder.Exchange != nil {
-		mq, err = NewMQWithExchange(&MQWithExchangeConfig{
+		mq, err = NewMQWithExchange(&MQConfigWithExchange{
 			Connection: builder.Connection,
 			Queue:      builder.Queue,
 			Exchange:   builder.Exchange,
