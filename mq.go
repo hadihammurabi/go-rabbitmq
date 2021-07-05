@@ -1,6 +1,8 @@
 package gorabbitmq
 
-import "github.com/streadway/amqp"
+import (
+	"github.com/streadway/amqp"
+)
 
 type mqDefault struct {
 	Connection *amqp.Connection
@@ -46,7 +48,7 @@ func (mq *mqDefault) Publish(publish *MQConfigPublish) error {
 	)
 }
 
-func (mq *mqDefault) Consume(queue amqp.Queue, consume *MQConfigConsume) error {
+func (mq *mqDefault) Consume(queue amqp.Queue, consume *MQConfigConsume) (<-chan amqp.Delivery, error) {
 	qname := queue.Name
 	if consume.Name != "" {
 		qname = consume.Name
@@ -61,8 +63,9 @@ func (mq *mqDefault) Consume(queue amqp.Queue, consume *MQConfigConsume) error {
 		consume.NoWait,
 		consume.Args,
 	)
+	if err != nil {
+		return nil, err
+	}
 
-	go consume.OnMessage(consumer)
-
-	return err
+	return consumer, nil
 }

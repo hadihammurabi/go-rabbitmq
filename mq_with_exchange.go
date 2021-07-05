@@ -83,7 +83,7 @@ func (mq *mqWithExchange) Publish(publish *MQConfigPublish) error {
 	)
 }
 
-func (mq *mqWithExchange) Consume(q amqp.Queue, consume *MQConfigConsume) error {
+func (mq *mqWithExchange) Consume(q amqp.Queue, consume *MQConfigConsume) (<-chan amqp.Delivery, error) {
 	qname := q.Name
 	if consume.Name != "" {
 		qname = consume.Name
@@ -99,7 +99,9 @@ func (mq *mqWithExchange) Consume(q amqp.Queue, consume *MQConfigConsume) error 
 		consume.Args,
 	)
 
-	go consume.OnMessage(consumer)
+	if err != nil {
+		return nil, err
+	}
 
-	return err
+	return consumer, nil
 }

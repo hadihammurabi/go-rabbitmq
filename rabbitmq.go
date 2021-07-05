@@ -7,7 +7,7 @@ type MQ interface {
 	GetChannel() *amqp.Channel
 	GetQueue() amqp.Queue
 	Publish(publish *MQConfigPublish) error
-	Consume(queue amqp.Queue, consume *MQConfigConsume) error
+	Consume(queue amqp.Queue, consume *MQConfigConsume) (<-chan amqp.Delivery, error)
 }
 
 type MQConfig struct {
@@ -23,7 +23,6 @@ type MQConfigConsume struct {
 	NoLocal   bool
 	NoWait    bool
 	Args      amqp.Table
-	OnMessage func(msgs <-chan amqp.Delivery)
 }
 
 type MQConfigPublish struct {
