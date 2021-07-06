@@ -7,6 +7,7 @@ import (
 )
 
 type mqWithExchange struct {
+	MQ         MQ
 	Connection *amqp.Connection
 	Channel    *amqp.Channel
 	Queue      amqp.Queue
@@ -55,6 +56,7 @@ func NewMQWithExchange(config *MQConfigWithExchange) (MQ, error) {
 	}
 
 	return &mqWithExchange{
+		MQ:         mq,
 		Connection: mq.GetConnection(),
 		Channel:    channel,
 		Queue:      q,
@@ -71,6 +73,16 @@ func (mq *mqWithExchange) GetChannel() *amqp.Channel {
 
 func (mq *mqWithExchange) GetQueue() amqp.Queue {
 	return mq.Queue
+}
+
+func (mq *mqWithExchange) DeclareQueue(config *MQConfigQueue) (amqp.Queue, error) {
+	q, err := mq.MQ.DeclareQueue(config)
+	if err != nil {
+		return mq.Queue, nil
+	}
+
+	mq.Queue = q
+	return mq.Queue, nil
 }
 
 func (mq *mqWithExchange) Publish(publish *MQConfigPublish) error {

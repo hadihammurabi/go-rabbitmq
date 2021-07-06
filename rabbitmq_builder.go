@@ -11,8 +11,10 @@ func NewMQBuilder() *MQConfigBuilder {
 	return &MQConfigBuilder{}
 }
 
-func (builder *MQConfigBuilder) SetConnection(config *MQConfigConnection) *MQConfigBuilder {
-	builder.Connection = config
+func (builder *MQConfigBuilder) SetConnection(url string) *MQConfigBuilder {
+	builder.Connection = &MQConfigConnection{
+		URL: url,
+	}
 	return builder
 }
 
