@@ -6,8 +6,9 @@ type MQ interface {
 	GetConnection() *amqp.Connection
 	GetChannel() *amqp.Channel
 	GetQueue() amqp.Queue
-	Publish(publish *MQConfigPublish) error
-	Consume(queue amqp.Queue, consume *MQConfigConsume) (<-chan amqp.Delivery, error)
+	DeclareQueue(*MQConfigQueue) (amqp.Queue, error)
+	Publish(*MQConfigPublish) error
+	Consume(amqp.Queue, *MQConfigConsume) (<-chan amqp.Delivery, error)
 }
 
 type MQConfig struct {

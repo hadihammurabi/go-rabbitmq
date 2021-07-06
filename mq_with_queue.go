@@ -5,6 +5,7 @@ import (
 )
 
 type mqWithQueue struct {
+	MQ         MQ
 	Connection *amqp.Connection
 	Channel    *amqp.Channel
 	Queue      amqp.Queue
@@ -28,6 +29,7 @@ func NewMQWithQueue(config *MQConfigWithQueue) (MQ, error) {
 	}
 
 	return &mqWithQueue{
+		MQ:         mq,
 		Connection: mq.GetConnection(),
 		Channel:    channel,
 		Queue:      q,
@@ -44,6 +46,16 @@ func (mq *mqWithQueue) GetChannel() *amqp.Channel {
 
 func (mq *mqWithQueue) GetQueue() amqp.Queue {
 	return mq.Queue
+}
+
+func (mq *mqWithQueue) DeclareQueue(config *MQConfigQueue) (amqp.Queue, error) {
+	q, err := mq.MQ.DeclareQueue(config)
+	if err != nil {
+		return mq.Queue, nil
+	}
+
+	mq.Queue = q
+	return mq.Queue, nil
 }
 
 func (mq *mqWithQueue) Publish(publish *MQConfigPublish) error {

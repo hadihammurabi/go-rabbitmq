@@ -7,6 +7,7 @@ import (
 type mqDefault struct {
 	Connection *amqp.Connection
 	Channel    *amqp.Channel
+	Queue      amqp.Queue
 }
 
 func NewMQ(url string) (MQ, error) {
@@ -37,7 +38,17 @@ func (mq *mqDefault) GetChannel() *amqp.Channel {
 }
 
 func (mq *mqDefault) GetQueue() amqp.Queue {
-	return amqp.Queue{}
+	return mq.Queue
+}
+
+func (mq *mqDefault) DeclareQueue(config *MQConfigQueue) (amqp.Queue, error) {
+	q, err := NewQueue(mq.Channel, config)
+	if err != nil {
+		return mq.Queue, nil
+	}
+
+	mq.Queue = q
+	return mq.Queue, nil
 }
 
 func (mq *mqDefault) Publish(publish *MQConfigPublish) error {
