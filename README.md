@@ -73,6 +73,22 @@ import (
 ```
 
 ## Connect to RabbitMQ
+It can do as below.
+```go
+mq, err := rabbitmq.NewMQ(&rabbitmq.MQConfigConnection{
+	URL: "amqp://guest:guest@localhost:5672/",
+})
+if err != nil {
+ log.Fatal(err)
+}
+
+// don't forget to close the connection and channel
+defer func() {
+ mq.GetConnection().Close()
+ mq.GetChannel().Close()
+}()
+```
+
 ## Declare Queue
 ## Declare Exchange
 ## Bind Queue to Exchange
