@@ -51,11 +51,20 @@ func (mq *mqWithQueue) GetQueue() amqp.Queue {
 func (mq *mqWithQueue) DeclareQueue(config *MQConfigQueue) (amqp.Queue, error) {
 	q, err := mq.MQ.DeclareQueue(config)
 	if err != nil {
-		return mq.Queue, nil
+		return mq.Queue, err
 	}
 
 	mq.Queue = q
 	return mq.Queue, nil
+}
+
+func (mq *mqWithQueue) DeclareExchange(config *MQConfigExchange) error {
+	err := NewExchange(mq.Channel, config)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (mq *mqWithQueue) Publish(publish *MQConfigPublish) error {
