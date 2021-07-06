@@ -8,6 +8,7 @@ type MQ interface {
 	GetQueue() amqp.Queue
 	DeclareQueue(*MQConfigQueue) (amqp.Queue, error)
 	DeclareExchange(*MQConfigExchange) error
+	QueueBind(*MQConfigBind) error
 	Publish(*MQConfigPublish) error
 	Consume(amqp.Queue, *MQConfigConsume) (<-chan amqp.Delivery, error)
 }

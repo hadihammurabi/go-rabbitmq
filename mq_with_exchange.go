@@ -94,6 +94,15 @@ func (mq *mqWithExchange) DeclareExchange(config *MQConfigExchange) error {
 	return nil
 }
 
+func (mq *mqWithExchange) QueueBind(config *MQConfigBind) error {
+	err := NewQueueBind(mq.Channel, config)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (mq *mqWithExchange) Publish(publish *MQConfigPublish) error {
 	return mq.Channel.Publish(
 		publish.Exchange,

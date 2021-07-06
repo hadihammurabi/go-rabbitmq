@@ -60,6 +60,15 @@ func (mq *mqDefault) DeclareExchange(config *MQConfigExchange) error {
 	return nil
 }
 
+func (mq *mqDefault) QueueBind(config *MQConfigBind) error {
+	err := NewQueueBind(mq.Channel, config)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (mq *mqDefault) Publish(publish *MQConfigPublish) error {
 	return mq.Channel.Publish(
 		publish.Exchange,
