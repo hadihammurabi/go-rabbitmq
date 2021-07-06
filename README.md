@@ -16,6 +16,39 @@ Golang AMQP wrapper for RabbitMQ with better API
 * [Contributing](#contributing)
 
 # Background
+In [Golang](https://golang.org), to use [RabbitMQ](https://www.rabbitmq.com) with [AMQP](https://www.amqp.org) has advantages, especially in messaging systems.
+It's done with the [AMQP connector](https://github.com/streadway/amqp).
+But, the problem is it has a less convenient API.
+Programmers have to write something that should be set by default.
+For example, when creating a queue on RabbitMQ.
+We have to do this.
+```
+q, err := ch.QueueDeclare(
+  "hello", // name
+  false,   // durable
+  false,   // delete when unused
+  false,   // exclusive
+  false,   // no-wait
+  nil,     // arguments
+)
+failOnError(err, "Failed to declare a queue")
+```
+Too many `false` in there, which should be set as the default value.
+
+By using [this](.) module, we can do same think with less code. See above.
+```
+q, err := mq.NewQueue(
+  ch,
+  &gorabbitmq.MQConfigQueue{
+   Name: "hello",
+  },
+)
+failOnError(err, "Failed to declare a queue")
+```
+No need to write `false`, because it is the default value.
+
+So, to conclude, this module makes it easy to use amqp for rabbitmq.
+
 # Features
 # Usage
 ## Installation
