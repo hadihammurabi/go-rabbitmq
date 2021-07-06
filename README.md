@@ -90,8 +90,8 @@ defer func() {
 ```
 
 ## Declare Queue
-Queue creation can be done like this, after connecting to mq of course.
-> It only connects to the queue if the queue exists or create one if it doesn't exist.
+Queue declaration can be done like this, after connecting to mq of course.
+> It only connects to the queue if the queue exists or create one if it doesn't exist. (RabbitMQ behavior)
 ```go
 q, err := rabbitmq.NewQueue(mq.GetChannel(), &rabbitmq.MQConfigQueue{
   Name: "hello",
@@ -102,7 +102,30 @@ if err != nil {
 ```
 
 ## Declare Exchange
+Exchange declaration can be done like this, after connecting to mq of course.
+```go
+err := rabbitmq.NewExchange(mq.GetChannel(), &rabbitmq.MQConfigExchange{
+  Name: "hello",
+  Type: rabbitmq.ExchangeTypeFanout,
+})
+if err != nil {
+ log.Fatal(err)
+}
+```
+
 ## Bind Queue to Exchange
+Every message published to exchange will be distributed to every bound queue.
+To bind queue with exchange, follow example below.
+```go
+err := rabbitmq.NewQueueBind(mq.GetChannel(), &rabbitmq.MQConfigBind{
+  Name:     q.Name,
+  Exchange: "hello",
+})
+if err != nil {
+ log.Fatal(err)
+}
+```
+
 ## Consume Messages
 # How It Works
 # License
