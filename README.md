@@ -22,7 +22,7 @@ But, the problem is it has a less convenient API.
 Programmers have to write something that should be set by default.
 For example, when creating a queue on RabbitMQ.
 We have to do this.
-```
+```go
 q, err := ch.QueueDeclare(
   "hello", // name
   false,   // durable
@@ -36,7 +36,7 @@ failOnError(err, "Failed to declare a queue")
 Too many `false` in there, which should be set as the default value.
 
 By using [this](.) module, we can do same think with less code. See above.
-```
+```go
 q, err := mq.NewQueue(
   ch,
   &gorabbitmq.MQConfigQueue{
