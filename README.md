@@ -115,7 +115,7 @@ if err != nil {
 Every message published to exchange will be distributed to every bound queue.
 To bind queue with exchange, follow example below.
 ```go
-err := rabbitmq.NewQueueBind(mq.GetChannel(), &rabbitmq.MQConfigBind{
+err := mq.QueueBind(&rabbitmq.MQConfigBind{
   Name:     q.Name,
   Exchange: "hello",
 })
