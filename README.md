@@ -50,6 +50,11 @@ No need to write `false`, because it is the default value.
 So, to conclude, this module makes it easy to use amqp for rabbitmq.
 
 # Features
+* Built on top of famous [AMQP connector](https://github.com/streadway/amqp) in Go.
+* All object reference like connection, channel, queue, etc are original by the AMQP connector (no monkey patch or any modifications).
+* It has construction API and API with builder pattern.
+* Does not modify incoming messages, so it can be controlled manually.
+
 # Usage
 ## Installation
 ## Connect to RabbitMQ
