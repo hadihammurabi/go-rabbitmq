@@ -38,8 +38,7 @@ Too many `false` in there, which should be set as the default value.
 
 By using [this](.) module, we can do same think with less code. See above.
 ```go
-q, err := mq.NewQueue(
-  ch,
+q, err := mq.DeclareQueue(
   &gorabbitmq.MQConfigQueue{
    Name: "hello",
   },
@@ -76,9 +75,7 @@ import (
 ## Connect to RabbitMQ
 It can do as below.
 ```go
-mq, err := rabbitmq.NewMQ(&rabbitmq.MQConfigConnection{
-	URL: "amqp://guest:guest@localhost:5672/",
-})
+mq, err := rabbitmq.NewMQ("amqp://guest:guest@localhost:5672/")
 if err != nil {
  log.Fatal(err)
 }
@@ -94,7 +91,7 @@ defer func() {
 Queue declaration can be done like this, after connecting to mq of course.
 > It only connects to the queue if the queue exists or create one if it doesn't exist. (RabbitMQ behavior)
 ```go
-q, err := rabbitmq.NewQueue(mq.GetChannel(), &rabbitmq.MQConfigQueue{
+q, err := rabbitmq.DeclareQueue(&rabbitmq.MQConfigQueue{
   Name: "hello",
 })
 if err != nil {
@@ -105,7 +102,7 @@ if err != nil {
 ## Declare Exchange
 Exchange declaration can be done like this, after connecting to mq of course.
 ```go
-err := rabbitmq.NewExchange(mq.GetChannel(), &rabbitmq.MQConfigExchange{
+err := mq.DeclareExchange(&rabbitmq.MQConfigExchange{
   Name: "hello",
   Type: rabbitmq.ExchangeTypeFanout,
 })
