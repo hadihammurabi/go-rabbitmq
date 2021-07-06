@@ -27,7 +27,7 @@ func NewMQWithExchange(config *MQConfigWithExchange) (MQ, error) {
 		return nil, errors.New("exchange configuration not given")
 	}
 
-	mq, err := NewMQ(config.Connection)
+	mq, err := NewMQ(config.Connection.URL)
 	if err != nil {
 		return nil, err
 	}

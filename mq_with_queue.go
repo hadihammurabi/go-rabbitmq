@@ -16,7 +16,7 @@ type MQConfigWithQueue struct {
 }
 
 func NewMQWithQueue(config *MQConfigWithQueue) (MQ, error) {
-	mq, err := NewMQ(config.Connection)
+	mq, err := NewMQ(config.Connection.URL)
 	if err != nil {
 		return nil, err
 	}
