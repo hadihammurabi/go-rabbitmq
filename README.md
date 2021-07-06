@@ -91,7 +91,7 @@ defer func() {
 Queue declaration can be done like this, after connecting to mq of course.
 > It only connects to the queue if the queue exists or create one if it doesn't exist. (RabbitMQ behavior)
 ```go
-q, err := rabbitmq.DeclareQueue(&rabbitmq.MQConfigQueue{
+q, err := mq.DeclareQueue(&rabbitmq.MQConfigQueue{
   Name: "hello",
 })
 if err != nil {
