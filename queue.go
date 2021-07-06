@@ -3,7 +3,7 @@ package gorabbitmq
 import "github.com/streadway/amqp"
 
 type MQConfigQueue struct {
-	Name             string
+	Name             string `binding:"required"`
 	Durable          bool
 	DeleteWhenUnused bool
 	Exclusive        bool

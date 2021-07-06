@@ -34,7 +34,7 @@ func (builder *MQConfigBuilder) SetBind(config *MQConfigBind) *MQConfigBuilder {
 func (builder *MQConfigBuilder) Build() (MQ, error) {
 	var mq MQ
 
-	mq, err := NewMQ(builder.Connection)
+	mq, err := NewMQ(builder.Connection.URL)
 	if err != nil {
 		return nil, err
 	}

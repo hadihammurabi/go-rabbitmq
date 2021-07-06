@@ -9,8 +9,10 @@ type mqDefault struct {
 	Channel    *amqp.Channel
 }
 
-func NewMQ(config *MQConfigConnection) (MQ, error) {
-	conn, err := NewConnection(config)
+func NewMQ(url string) (MQ, error) {
+	conn, err := NewConnection(&MQConfigConnection{
+		URL: url,
+	})
 	if err != nil {
 		return nil, err
 	}
