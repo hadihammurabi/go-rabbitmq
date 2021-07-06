@@ -26,5 +26,7 @@ Golang AMQP wrapper for RabbitMQ with better API
 ## Consume Messages
 # How It Works
 # License
+This project is under [Mozilla Public License 2.0](./LICENSE).
+
 # Contributing
 Realy love any contribution. Feel free to create a [Pull Request](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request) with following this [commit convention](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit). 
