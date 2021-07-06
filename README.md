@@ -144,7 +144,25 @@ if err != nil {
 ```
 
 ## Consume Messages
+Every message in the queue can be consumed by the queue consumer.
+To consume messages in queue can do like this.
 
+> The following code will run forever to listen for new message in queue.
+```go
+msgs, err := mq.Consume(q, &rabbitmq.MQConfigConsume{})
+if err != nil {
+ log.Fatal(err)
+}
+
+forever := make(chan bool)
+go func() {
+  for msg := range msgs {
+    fmt.Println(string(msg.Body))
+    msg.Ack(false)
+  }
+}()
+<-forever
+```
 
 # How It Works
 # License
