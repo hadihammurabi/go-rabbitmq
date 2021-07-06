@@ -10,6 +10,7 @@ Golang AMQP wrapper for RabbitMQ with better API
   * [Declare Queue](#declare-queue)
   * [Declare Exchange](#declare-exchange)
   * [Bind Queue to Exchange](#bind-queue-to-exchange)
+  * [Publish a Message](#publish-a-message)
   * [Consume Messages](#consume-messages)
 * [How It Works](#how-it-works)
 * [License](#license)
@@ -126,7 +127,25 @@ if err != nil {
 }
 ```
 
+## Publish a Message
+A message can be sent to exchange by mentioning the name exchange.
+Publishing a message can do like this.
+```go
+err := mq.Publish(&rabbitmq.MQConfigPublish{
+  Exchange: "hello",
+  Message: amqp.Publishing{
+    ContentType: "text/plain",
+    Body:        []byte(body),
+  },
+})
+if err != nil {
+ log.Fatal(err)
+}
+```
+
 ## Consume Messages
+
+
 # How It Works
 # License
 This project is under [Mozilla Public License 2.0](./LICENSE).
