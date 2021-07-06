@@ -68,7 +68,7 @@ For example.
 package main
 
 import (
- "go get github.com/hadihammurabi/go-rabbitmq"
+ rabbitmq "github.com/hadihammurabi/go-rabbitmq"
 )
 ```
 
@@ -90,6 +90,17 @@ defer func() {
 ```
 
 ## Declare Queue
+Queue creation can be done like this, after connecting to mq of course.
+> It only connects to the queue if the queue exists or create one if it doesn't exist.
+```go
+q, err := rabbitmq.NewQueue(mq.GetChannel(), &rabbitmq.MQConfigQueue{
+  Name: "hello",
+})
+if err != nil {
+ log.Fatal(err)
+}
+```
+
 ## Declare Exchange
 ## Bind Queue to Exchange
 ## Consume Messages
