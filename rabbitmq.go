@@ -10,7 +10,7 @@ type MQ interface {
 	DeclareExchange(*MQConfigExchange) error
 	QueueBind(*MQConfigBind) error
 	Publish(*MQConfigPublish) error
-	Consume(amqp.Queue, *MQConfigConsume) (<-chan amqp.Delivery, error)
+	Consume(*MQConfigConsume) (<-chan amqp.Delivery, error)
 	Close()
 }
 
