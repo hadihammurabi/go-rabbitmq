@@ -86,14 +86,13 @@ func (mq *mqWithQueue) Publish(publish *MQConfigPublish) error {
 	)
 }
 
-func (mq *mqWithQueue) Consume(q amqp.Queue, consume *MQConfigConsume) (<-chan amqp.Delivery, error) {
-	qname := q.Name
-	if consume.Name != "" {
-		qname = consume.Name
+func (mq *mqWithQueue) Consume(consume *MQConfigConsume) (<-chan amqp.Delivery, error) {
+	if consume == nil {
+		consume = &MQConfigConsume{}
 	}
 
 	consumer, err := mq.Channel.Consume(
-		qname,
+		mq.Queue.Name,
 		consume.Consumer,
 		consume.AutoACK,
 		consume.Exclusive,
