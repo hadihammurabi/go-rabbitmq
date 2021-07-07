@@ -146,7 +146,7 @@ To consume messages in queue can do like this.
 
 > The following code will run forever to listen for new message in queue.
 ```go
-msgs, err := mq.Consume(q, &rabbitmq.MQConfigConsume{})
+msgs, err := mq.Consume(nil)
 if err != nil {
  log.Fatal(err)
 }
