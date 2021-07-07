@@ -81,10 +81,7 @@ if err != nil {
 }
 
 // don't forget to close the connection and channel
-defer func() {
- mq.GetConnection().Close()
- mq.GetChannel().Close()
-}()
+defer mq.Close()
 ```
 
 ## Declare Queue
