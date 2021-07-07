@@ -159,6 +159,12 @@ go func() {
 ```
 
 # How It Works
+Every AMQP related function call will invoke the AMQP connector function.
+For example when creating a new MQ, it will call the AMQP connection function.
+Declare queue, declare exchange, publish, consume, etc will do the same.
+
+> Please use any references made previously to prevent too many function calls.
+
 # License
 This project is under [Mozilla Public License 2.0](./LICENSE).
 
