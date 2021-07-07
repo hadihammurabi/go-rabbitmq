@@ -135,3 +135,8 @@ func (mq *mqWithExchange) Consume(q amqp.Queue, consume *MQConfigConsume) (<-cha
 
 	return consumer, nil
 }
+
+func (mq *mqWithExchange) Close() {
+	mq.Connection.Close()
+	mq.Channel.Close()
+}

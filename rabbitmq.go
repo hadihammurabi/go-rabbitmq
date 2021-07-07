@@ -11,6 +11,7 @@ type MQ interface {
 	QueueBind(*MQConfigBind) error
 	Publish(*MQConfigPublish) error
 	Consume(amqp.Queue, *MQConfigConsume) (<-chan amqp.Delivery, error)
+	Close()
 }
 
 type MQConfig struct {
