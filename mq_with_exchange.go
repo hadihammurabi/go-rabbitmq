@@ -67,7 +67,7 @@ func (mq *mqWithExchange) GetConnection() *amqp.Connection {
 	return mq.Connection
 }
 
-func (mq *mqWithExchange) GetChannel() *amqp.Channel {
+func (mq *mqWithExchange) GetChannel(name ...string) *amqp.Channel {
 	return mq.Channel
 }
 
@@ -75,8 +75,8 @@ func (mq *mqWithExchange) GetQueue() amqp.Queue {
 	return mq.Queue
 }
 
-func (mq *mqWithExchange) DeclareQueue(config *MQConfigQueue) (amqp.Queue, error) {
-	q, err := mq.MQ.DeclareQueue(config)
+func (mq *mqWithExchange) DeclareQueue(name string, config *MQConfigQueue) (amqp.Queue, error) {
+	q, err := mq.MQ.DeclareQueue("", config)
 	if err != nil {
 		return mq.Queue, err
 	}
@@ -85,7 +85,7 @@ func (mq *mqWithExchange) DeclareQueue(config *MQConfigQueue) (amqp.Queue, error
 	return mq.Queue, nil
 }
 
-func (mq *mqWithExchange) DeclareExchange(config *MQConfigExchange) error {
+func (mq *mqWithExchange) DeclareExchange(name string, config *MQConfigExchange) error {
 	err := NewExchange(mq.Channel, config)
 	if err != nil {
 		return err
@@ -94,7 +94,7 @@ func (mq *mqWithExchange) DeclareExchange(config *MQConfigExchange) error {
 	return nil
 }
 
-func (mq *mqWithExchange) QueueBind(config *MQConfigBind) error {
+func (mq *mqWithExchange) QueueBind(name string, config *MQConfigBind) error {
 	err := NewQueueBind(mq.Channel, config)
 	if err != nil {
 		return err
@@ -103,7 +103,7 @@ func (mq *mqWithExchange) QueueBind(config *MQConfigBind) error {
 	return nil
 }
 
-func (mq *mqWithExchange) Publish(publish *MQConfigPublish) error {
+func (mq *mqWithExchange) Publish(name string, publish *MQConfigPublish) error {
 	return mq.Channel.Publish(
 		publish.Exchange,
 		publish.RoutingKey,
@@ -113,7 +113,7 @@ func (mq *mqWithExchange) Publish(publish *MQConfigPublish) error {
 	)
 }
 
-func (mq *mqWithExchange) Consume(consume *MQConfigConsume) (<-chan amqp.Delivery, error) {
+func (mq *mqWithExchange) Consume(name string, consume *MQConfigConsume) (<-chan amqp.Delivery, error) {
 	if consume == nil {
 		consume = &MQConfigConsume{}
 	}

@@ -1,12 +1,15 @@
 package gorabbitmq
 
 import (
+	"sync"
+
 	"github.com/streadway/amqp"
 )
 
 type mqDefault struct {
+	Lock       *sync.Mutex
 	Connection *amqp.Connection
-	Channel    *amqp.Channel
+	Channel    map[string]*amqp.Channel
 	Queue      amqp.Queue
 }
 
@@ -25,7 +28,10 @@ func NewMQ(url string) (MQ, error) {
 
 	return &mqDefault{
 		Connection: conn,
-		Channel:    ch,
+		Lock:       &sync.Mutex{},
+		Channel: map[string]*amqp.Channel{
+			"default": ch,
+		},
 	}, nil
 }
 
@@ -33,16 +39,51 @@ func (mq *mqDefault) GetConnection() *amqp.Connection {
 	return mq.Connection
 }
 
-func (mq *mqDefault) GetChannel() *amqp.Channel {
-	return mq.Channel
+func (mq *mqDefault) CreateChannel(name string) (*amqp.Channel, error) {
+
+	mq.Lock.Lock()
+	ch, err := mq.Connection.Channel()
+	if err != nil {
+		return nil, err
+	}
+
+	mq.Channel[name] = ch
+	mq.Lock.Unlock()
+	return ch, nil
+}
+
+func (mq *mqDefault) GetChannel(name ...string) *amqp.Channel {
+
+	n := "default"
+
+	if len(name) > 0 {
+		if name[0] != "" {
+			n = name[0]
+		}
+	}
+
+	return mq.Channel[n]
+}
+
+func (mq *mqDefault) CloseChannel(name string) error {
+
+	mq.Lock.Lock()
+	if err := mq.Channel[name].Close(); err != nil {
+		return err
+	}
+
+	delete(mq.Channel, name)
+	mq.Lock.Unlock()
+
+	return nil
 }
 
 func (mq *mqDefault) GetQueue() amqp.Queue {
 	return mq.Queue
 }
 
-func (mq *mqDefault) DeclareQueue(config *MQConfigQueue) (amqp.Queue, error) {
-	q, err := NewQueue(mq.Channel, config)
+func (mq *mqDefault) DeclareQueue(name string, config *MQConfigQueue) (amqp.Queue, error) {
+	q, err := NewQueue(mq.Channel[name], config)
 	if err != nil {
 		return mq.Queue, err
 	}
@@ -51,8 +92,8 @@ func (mq *mqDefault) DeclareQueue(config *MQConfigQueue) (amqp.Queue, error) {
 	return mq.Queue, nil
 }
 
-func (mq *mqDefault) DeclareExchange(config *MQConfigExchange) error {
-	err := NewExchange(mq.Channel, config)
+func (mq *mqDefault) DeclareExchange(name string, config *MQConfigExchange) error {
+	err := NewExchange(mq.Channel[name], config)
 	if err != nil {
 		return err
 	}
@@ -60,8 +101,8 @@ func (mq *mqDefault) DeclareExchange(config *MQConfigExchange) error {
 	return nil
 }
 
-func (mq *mqDefault) QueueBind(config *MQConfigBind) error {
-	err := NewQueueBind(mq.Channel, config)
+func (mq *mqDefault) QueueBind(name string, config *MQConfigBind) error {
+	err := NewQueueBind(mq.Channel[name], config)
 	if err != nil {
 		return err
 	}
@@ -69,8 +110,8 @@ func (mq *mqDefault) QueueBind(config *MQConfigBind) error {
 	return nil
 }
 
-func (mq *mqDefault) Publish(publish *MQConfigPublish) error {
-	return mq.Channel.Publish(
+func (mq *mqDefault) Publish(name string, publish *MQConfigPublish) error {
+	return mq.Channel[name].Publish(
 		publish.Exchange,
 		publish.RoutingKey,
 		publish.Mandatory,
@@ -79,12 +120,12 @@ func (mq *mqDefault) Publish(publish *MQConfigPublish) error {
 	)
 }
 
-func (mq *mqDefault) Consume(consume *MQConfigConsume) (<-chan amqp.Delivery, error) {
+func (mq *mqDefault) Consume(name string, consume *MQConfigConsume) (<-chan amqp.Delivery, error) {
 	if consume == nil {
 		consume = &MQConfigConsume{}
 	}
 
-	consumer, err := mq.Channel.Consume(
+	consumer, err := mq.Channel[name].Consume(
 		mq.Queue.Name,
 		consume.Consumer,
 		consume.AutoACK,
@@ -102,5 +143,4 @@ func (mq *mqDefault) Consume(consume *MQConfigConsume) (<-chan amqp.Delivery, er
 
 func (mq *mqDefault) Close() {
 	mq.Connection.Close()
-	mq.Channel.Close()
 }
