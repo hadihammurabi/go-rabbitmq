@@ -4,13 +4,13 @@ import "github.com/streadway/amqp"
 
 type MQ interface {
 	GetConnection() *amqp.Connection
-	GetChannel() *amqp.Channel
+	GetChannel(name ...string) *amqp.Channel
 	GetQueue() amqp.Queue
-	DeclareQueue(*MQConfigQueue) (amqp.Queue, error)
-	DeclareExchange(*MQConfigExchange) error
-	QueueBind(*MQConfigBind) error
-	Publish(*MQConfigPublish) error
-	Consume(*MQConfigConsume) (<-chan amqp.Delivery, error)
+	DeclareQueue(string, *MQConfigQueue) (amqp.Queue, error)
+	DeclareExchange(string, *MQConfigExchange) error
+	QueueBind(string, *MQConfigBind) error
+	Publish(string, *MQConfigPublish) error
+	Consume(string, *MQConfigConsume) (<-chan amqp.Delivery, error)
 	Close()
 }
 
