@@ -54,6 +54,7 @@ So, to conclude, this module makes it easy to use amqp for rabbitmq.
 * All object reference like connection, channel, queue, etc are original by the AMQP connector (no monkey patch or any modifications).
 * It has construction API and API with builder pattern.
 * Does not modify incoming messages, so it can be controlled manually.
+* Managed multiple channel with single connection.
 
 # Usage
 ## Installation
