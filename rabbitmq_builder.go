@@ -42,22 +42,19 @@ func (builder *MQConfigBuilder) Build() (MQ, error) {
 	}
 
 	if builder.Queue != nil {
-		mq, err = NewMQWithQueue(&MQConfigWithQueue{
-			Connection: builder.Connection,
-			Queue:      builder.Queue,
-		})
+		_, err := mq.DeclareQueue(builder.Queue)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	if builder.Exchange != nil {
-		mq, err = NewMQWithExchange(&MQConfigWithExchange{
-			Connection: builder.Connection,
-			Queue:      builder.Queue,
-			Exchange:   builder.Exchange,
-			Bind:       builder.Bind,
-		})
+		err = mq.DeclareExchange(builder.Exchange)
+		if err != nil {
+			return nil, err
+		}
+
+		err = mq.QueueBind(builder.Bind)
 		if err != nil {
 			return nil, err
 		}
