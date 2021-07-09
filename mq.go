@@ -1,6 +1,7 @@
 package gorabbitmq
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/streadway/amqp"
@@ -9,7 +10,7 @@ import (
 type mqDefault struct {
 	Lock       *sync.Mutex
 	Connection *amqp.Connection
-	Channel    map[string]*amqp.Channel
+	channel    map[string]*amqp.Channel
 	Queue      amqp.Queue
 }
 
@@ -29,7 +30,7 @@ func NewMQ(url string) (MQ, error) {
 	return &mqDefault{
 		Connection: conn,
 		Lock:       &sync.Mutex{},
-		Channel: map[string]*amqp.Channel{
+		channel: map[string]*amqp.Channel{
 			"default": ch,
 		},
 	}, nil
@@ -39,22 +40,8 @@ func (mq *mqDefault) GetConnection() *amqp.Connection {
 	return mq.Connection
 }
 
-func (mq *mqDefault) CreateChannel(name string) (*amqp.Channel, error) {
-
-	mq.Lock.Lock()
-	ch, err := mq.Connection.Channel()
-	if err != nil {
-		return nil, err
-	}
-
-	mq.Channel[name] = ch
-	mq.Lock.Unlock()
-	return ch, nil
-}
-
-func (mq *mqDefault) GetChannel(name ...string) *amqp.Channel {
-
-	n := "default"
+func (mq *mqDefault) CreateChannel(name ...string) (*amqp.Channel, error) {
+	n := ChannelDefault
 
 	if len(name) > 0 {
 		if name[0] != "" {
@@ -62,20 +49,48 @@ func (mq *mqDefault) GetChannel(name ...string) *amqp.Channel {
 		}
 	}
 
-	return mq.Channel[n]
-}
-
-func (mq *mqDefault) CloseChannel(name string) error {
-
 	mq.Lock.Lock()
-	if err := mq.GetChannel().Close(); err != nil {
-		return err
+	ch, err := mq.Connection.Channel()
+	if err != nil {
+		return nil, err
 	}
 
-	delete(mq.Channel, name)
+	mq.channel[n] = ch
 	mq.Lock.Unlock()
+	return ch, nil
+}
 
-	return nil
+func (mq *mqDefault) GetChannel(name ...string) *amqp.Channel {
+	n := ChannelDefault
+
+	if len(name) > 0 {
+		if name[0] != "" {
+			n = name[0]
+		}
+	}
+
+	return mq.channel[n]
+}
+
+func (mq *mqDefault) WithChannel(name ...string) MQ {
+	fmt.Println("mantap")
+	n := ChannelDefault
+
+	if len(name) > 0 {
+		if name[0] != "" {
+			n = name[0]
+		}
+	}
+
+	c := mq.GetChannel(n)
+
+	return &mqDefault{
+		Connection: mq.Connection,
+		Lock:       &sync.Mutex{},
+		channel: map[string]*amqp.Channel{
+			"default": c,
+		},
+	}
 }
 
 func (mq *mqDefault) GetQueue() amqp.Queue {

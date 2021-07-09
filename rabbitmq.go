@@ -8,11 +8,13 @@ const (
 
 type MQ interface {
 	GetConnection() *amqp.Connection
+	CreateChannel(name ...string) (*amqp.Channel, error)
 	GetChannel(name ...string) *amqp.Channel
-	GetQueue() amqp.Queue
+	WithChannel(name ...string) MQ
 	DeclareQueue(*MQConfigQueue) (amqp.Queue, error)
-	DeclareExchange(*MQConfigExchange) error
+	GetQueue() amqp.Queue
 	QueueBind(*MQConfigBind) error
+	DeclareExchange(*MQConfigExchange) error
 	Publish(*MQConfigPublish) error
 	Consume(*MQConfigConsume) (<-chan amqp.Delivery, error)
 	Close()
