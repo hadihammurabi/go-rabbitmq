@@ -2,15 +2,19 @@ package gorabbitmq
 
 import "github.com/streadway/amqp"
 
+const (
+	ChannelDefault = "default"
+)
+
 type MQ interface {
 	GetConnection() *amqp.Connection
 	GetChannel(name ...string) *amqp.Channel
 	GetQueue() amqp.Queue
-	DeclareQueue(string, *MQConfigQueue) (amqp.Queue, error)
-	DeclareExchange(string, *MQConfigExchange) error
-	QueueBind(string, *MQConfigBind) error
-	Publish(string, *MQConfigPublish) error
-	Consume(string, *MQConfigConsume) (<-chan amqp.Delivery, error)
+	DeclareQueue(*MQConfigQueue) (amqp.Queue, error)
+	DeclareExchange(*MQConfigExchange) error
+	QueueBind(*MQConfigBind) error
+	Publish(*MQConfigPublish) error
+	Consume(*MQConfigConsume) (<-chan amqp.Delivery, error)
 	Close()
 }
 
