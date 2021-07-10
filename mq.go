@@ -15,9 +15,7 @@ type mqDefault struct {
 }
 
 func NewMQ(url string) (MQ, error) {
-	conn, err := NewConnection(&MQConfigConnection{
-		URL: url,
-	})
+	conn, err := NewConnection(NewConnectionOptions().SetURL(url))
 	if err != nil {
 		return nil, err
 	}
