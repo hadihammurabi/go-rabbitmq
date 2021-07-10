@@ -89,9 +89,7 @@ defer mq.Close()
 Queue declaration can be done like this, after connecting to mq of course.
 > It only connects to the queue if the queue exists or create one if it doesn't exist. (RabbitMQ behavior)
 ```go
-q, err := mq.DeclareQueue(&rabbitmq.MQConfigQueue{
-  Name: "hello",
-})
+q, err := mq.DeclareQueue(rabbitmq.NewQueueOptions().SetName("hello"))
 if err != nil {
  log.Fatal(err)
 }
@@ -100,10 +98,7 @@ if err != nil {
 ## Declare Exchange
 Exchange declaration can be done like this, after connecting to mq of course.
 ```go
-err := mq.DeclareExchange(&rabbitmq.MQConfigExchange{
-  Name: "hello",
-  Type: rabbitmq.ExchangeTypeFanout,
-})
+err := mq.DeclareExchange(rabbitmq.NewExchangeOptions().SetName("hello").SetType(rabbitmq.ExchangeTypeFanout))
 if err != nil {
  log.Fatal(err)
 }
@@ -113,10 +108,7 @@ if err != nil {
 Every message published to exchange will be distributed to every bound queue.
 To bind queue with exchange, follow example below.
 ```go
-err := mq.QueueBind(&rabbitmq.MQConfigBind{
-  Name:     q.Name,
-  Exchange: "hello",
-})
+err := mq.QueueBind(rabbitmq.NewQueueBindOptions().SetName("hello").SetExchange("hello"))
 if err != nil {
  log.Fatal(err)
 }
@@ -126,13 +118,13 @@ if err != nil {
 A message can be sent to exchange by mentioning the name exchange.
 Publishing a message can do like this.
 ```go
-err := mq.Publish(&rabbitmq.MQConfigPublish{
-  Exchange: "hello",
-  Message: amqp.Publishing{
-    ContentType: "text/plain",
-    Body:        []byte(body),
-  },
-})
+err := mq.Publish(
+				rabbitmq.NewPublishOptions().SetExchange("hello").
+					SetMessage(amqp.Publishing{
+						ContentType: "text/plain",
+						Body:        []byte(body),
+					}),
+)
 if err != nil {
  log.Fatal(err)
 }
