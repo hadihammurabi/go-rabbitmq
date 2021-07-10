@@ -1,7 +1,6 @@
 package gorabbitmq
 
 import (
-	"fmt"
 	"sync"
 
 	"github.com/streadway/amqp"
@@ -71,7 +70,6 @@ func (mq *mqDefault) GetChannel(name ...string) *amqp.Channel {
 }
 
 func (mq *mqDefault) WithChannel(name ...string) MQ {
-	fmt.Println("mantap")
 	n := ChannelDefault
 
 	if len(name) > 0 {
