@@ -34,11 +34,3 @@ type MQConfigConsume struct {
 	NoWait    bool
 	Args      amqp.Table
 }
-
-type MQConfigPublish struct {
-	Exchange   string
-	RoutingKey string
-	Mandatory  bool
-	Immediate  bool
-	Message    amqp.Publishing
-}
