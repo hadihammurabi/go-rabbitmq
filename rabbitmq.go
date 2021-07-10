@@ -3,7 +3,7 @@ package gorabbitmq
 import "github.com/streadway/amqp"
 
 const (
-	ChannelDefault = "default"
+	ChannelDefault string = "default"
 )
 
 type MQ interface {
