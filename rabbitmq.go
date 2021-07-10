@@ -13,7 +13,7 @@ type MQ interface {
 	WithChannel(name ...string) MQ
 	DeclareQueue(*MQConfigQueue) (amqp.Queue, error)
 	GetQueue() amqp.Queue
-	QueueBind(*MQConfigBind) error
+	QueueBind(*MQConfigQueueBind) error
 	DeclareExchange(*MQConfigExchange) error
 	Publish(*MQConfigPublish) error
 	Consume(*MQConfigConsume) (<-chan amqp.Delivery, error)

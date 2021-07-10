@@ -4,7 +4,7 @@ type MQConfigBuilder struct {
 	Connection *MQConfigConnection
 	Exchange   *MQConfigExchange
 	Queue      *MQConfigQueue
-	Bind       *MQConfigBind
+	Bind       *MQConfigQueueBind
 }
 
 func NewMQBuilder() *MQConfigBuilder {
@@ -28,7 +28,7 @@ func (builder *MQConfigBuilder) SetQueue(config *MQConfigQueue) *MQConfigBuilder
 	return builder
 }
 
-func (builder *MQConfigBuilder) SetBind(config *MQConfigBind) *MQConfigBuilder {
+func (builder *MQConfigBuilder) SetBind(config *MQConfigQueueBind) *MQConfigBuilder {
 	builder.Bind = config
 	return builder
 }

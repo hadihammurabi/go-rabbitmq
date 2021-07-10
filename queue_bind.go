@@ -2,7 +2,7 @@ package gorabbitmq
 
 import "github.com/streadway/amqp"
 
-type MQConfigBind struct {
+type MQConfigQueueBind struct {
 	Name       string
 	RoutingKey string
 	Exchange   string
@@ -10,7 +10,7 @@ type MQConfigBind struct {
 	Args       amqp.Table
 }
 
-func NewQueueBind(channel *amqp.Channel, bind *MQConfigBind) error {
+func NewQueueBind(channel *amqp.Channel, bind *MQConfigQueueBind) error {
 	return channel.QueueBind(
 		bind.Name,
 		bind.RoutingKey,

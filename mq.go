@@ -112,7 +112,7 @@ func (mq *mqDefault) DeclareExchange(config *MQConfigExchange) error {
 	return nil
 }
 
-func (mq *mqDefault) QueueBind(config *MQConfigBind) error {
+func (mq *mqDefault) QueueBind(config *MQConfigQueueBind) error {
 	err := NewQueueBind(mq.GetChannel(), config)
 	if err != nil {
 		return err
