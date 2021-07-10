@@ -119,11 +119,12 @@ A message can be sent to exchange by mentioning the name exchange.
 Publishing a message can do like this.
 ```go
 err := mq.Publish(
-				rabbitmq.NewPublishOptions().SetExchange("hello").
-					SetMessage(amqp.Publishing{
-						ContentType: "text/plain",
-						Body:        []byte(body),
-					}),
+  rabbitmq.NewPublishOptions().
+        SetExchange("hello").
+	SetMessage(amqp.Publishing{
+		ContentType: "text/plain",
+		Body:        []byte(body),
+	}),
 )
 if err != nil {
  log.Fatal(err)
