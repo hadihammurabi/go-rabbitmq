@@ -1,4 +1,35 @@
 
+<a name="0.1.2"></a>
+## [0.1.2](https://github.com/hadihammurabi/go-rabbitmq/compare/0.1.1...0.1.2) (2021-07-11)
+
+### Chore
+
+* add type for ChannelDefault const
+
+### Docs
+
+* fix formatting for publish message example
+* update code example with new options API
+* update multiple channel feature
+
+### Feat
+
+* **channel:** add WithChannel to get mq with named channel
+* **connection:** func to create options
+* **example:** simple consumer
+* **example:** simple publisher
+* **exchange:** func to create options
+* **mq:** multiple channel
+* **publish:** func to create options
+* **queue:** func to create options
+* **queue-bind:** func to create options
+
+### Refactor
+
+* rename MQConfigBind to MQConfigQueueBind
+* only one MQ type (needed for now)
+
+
 <a name="0.1.1"></a>
 ## [0.1.1](https://github.com/hadihammurabi/go-rabbitmq/compare/0.1.0...0.1.1) (2021-07-07)
 
