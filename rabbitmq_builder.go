@@ -1,10 +1,13 @@
 package gorabbitmq
 
+import "github.com/streadway/amqp"
+
 type MQConfigBuilder struct {
-	Connection *MQConfigConnection
-	Exchange   *MQConfigExchange
-	Queue      *MQConfigQueue
-	Bind       *MQConfigQueueBind
+	ConnectionConfig *MQConfigConnection
+	Connection       *amqp.Connection
+	ExchangeConfig   *MQConfigExchange
+	QueueConfig      *MQConfigQueue
+	BindConfig       *MQConfigQueueBind
 }
 
 func NewMQBuilder() *MQConfigBuilder {
@@ -12,49 +15,62 @@ func NewMQBuilder() *MQConfigBuilder {
 }
 
 func (builder *MQConfigBuilder) SetConnection(url string) *MQConfigBuilder {
-	builder.Connection = &MQConfigConnection{
+	builder.ConnectionConfig = &MQConfigConnection{
 		URL: url,
 	}
 	return builder
 }
 
+func (builder *MQConfigBuilder) WithConnection(conn *amqp.Connection) *MQConfigBuilder {
+	builder.Connection = conn
+	return builder
+}
+
 func (builder *MQConfigBuilder) SetExchange(config *MQConfigExchange) *MQConfigBuilder {
-	builder.Exchange = config
+	builder.ExchangeConfig = config
 	return builder
 }
 
 func (builder *MQConfigBuilder) SetQueue(config *MQConfigQueue) *MQConfigBuilder {
-	builder.Queue = config
+	builder.QueueConfig = config
 	return builder
 }
 
 func (builder *MQConfigBuilder) SetBind(config *MQConfigQueueBind) *MQConfigBuilder {
-	builder.Bind = config
+	builder.BindConfig = config
 	return builder
 }
 
 func (builder *MQConfigBuilder) Build() (MQ, error) {
 	var mq MQ
+	var err error
 
-	mq, err := NewMQ(builder.Connection.URL)
-	if err != nil {
-		return nil, err
-	}
-
-	if builder.Queue != nil {
-		_, err := mq.DeclareQueue(builder.Queue)
+	if builder.Connection == nil {
+		mq, err = NewMQ(builder.ConnectionConfig.URL)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		mq, err = NewMQFromConnection(builder.Connection)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	if builder.Exchange != nil {
-		err = mq.DeclareExchange(builder.Exchange)
+	if builder.QueueConfig != nil {
+		_, err := mq.QueueDeclare(builder.QueueConfig)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if builder.ExchangeConfig != nil {
+		err = mq.ExchangeDeclare(builder.ExchangeConfig)
 		if err != nil {
 			return nil, err
 		}
 
-		err = mq.QueueBind(builder.Bind)
+		err = mq.QueueBind(builder.BindConfig)
 		if err != nil {
 			return nil, err
 		}
