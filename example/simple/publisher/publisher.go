@@ -22,12 +22,9 @@ func failOnError(err error, msg string) {
 func main() {
 	mq, err := rabbitmq.NewMQ("amqp://guest:guest@localhost:5672/")
 	failOnError(err, fmt.Sprintf("%v", err))
-	defer func() {
-		mq.GetConnection().Close()
-		mq.GetChannel().Close()
-	}()
+	defer mq.Close()
 
-	_, err = mq.DeclareQueue(rabbitmq.NewQueueOptions().SetName("hello"))
+	_, err = mq.QueueDeclare(rabbitmq.NewQueueOptions().SetName("hello"))
 	failOnError(err, fmt.Sprintf("%v", err))
 
 	var wg sync.WaitGroup
@@ -38,7 +35,7 @@ func main() {
 			defer wg.Done()
 			body := fmt.Sprintf("Hello World %d !", a)
 			err = mq.Publish(&rabbitmq.MQConfigPublish{
-				RoutingKey: mq.GetQueue().Name,
+				RoutingKey: mq.Queue().Name,
 				Message: amqp.Publishing{
 					ContentType: "text/plain",
 					Body:        []byte(body),

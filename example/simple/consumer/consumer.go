@@ -19,12 +19,9 @@ func failOnError(err error, msg string) {
 func main() {
 	mq, err := rabbitmq.NewMQ("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to create a MQ")
-	defer func() {
-		mq.GetConnection().Close()
-		mq.GetChannel().Close()
-	}()
+	defer mq.Close()
 
-	_, err = mq.DeclareQueue(rabbitmq.NewQueueOptions().SetName("hello"))
+	_, err = mq.QueueDeclare(rabbitmq.NewQueueOptions().SetName("hello"))
 	failOnError(err, "Failed to declare a queue")
 
 	log.Println(" [*] Waiting for messages. To exit press CTRL+C")
