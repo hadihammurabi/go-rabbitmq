@@ -29,8 +29,8 @@ func New(url string) (*MQ, error) {
 	return &MQ{
 		connection: conn,
 		channel:    ch,
-		queue:      queue.New(),
-		exchange:   exchange.New(),
+		queue:      queue.New(ch),
+		exchange:   exchange.New(ch),
 	}, nil
 }
 

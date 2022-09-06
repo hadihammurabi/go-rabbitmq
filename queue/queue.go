@@ -20,12 +20,13 @@ type Queue struct {
 	bindOptions *BindOptions
 }
 
-func New() *Queue {
+func New(Channel *amqp.Channel) *Queue {
 	return &Queue{
 		Durable:          false,
 		DeleteWhenUnused: false,
 		Exclusive:        false,
 		NoWait:           false,
+		Channel:          Channel,
 		bindOptions:      &BindOptions{},
 	}
 }

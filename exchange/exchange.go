@@ -25,8 +25,10 @@ type Exchange struct {
 	Channel     *amqp.Channel
 }
 
-func New() *Exchange {
-	return &Exchange{}
+func New(Channel *amqp.Channel) *Exchange {
+	return &Exchange{
+		Channel: Channel,
+	}
 }
 
 func (config *Exchange) From(exchange *Exchange) *Exchange {
