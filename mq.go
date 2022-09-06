@@ -3,17 +3,18 @@ package gorabbitmq
 import (
 	"github.com/streadway/amqp"
 
-	queue "github.com/hadihammurabi/go-rabbitmq/queue"
+	"github.com/hadihammurabi/go-rabbitmq/connection"
+	"github.com/hadihammurabi/go-rabbitmq/queue"
 )
 
 type MQ struct {
-	connection *amqp.Connection
+	connection *connection.Connection
 	channel    *amqp.Channel
 	queue      *queue.Queue
 }
 
 func New(url string) (*MQ, error) {
-	conn, err := NewConnection(NewConnectionOptions().SetURL(url))
+	conn, err := connection.New(url)
 	if err != nil {
 		return nil, err
 	}
@@ -26,10 +27,11 @@ func New(url string) (*MQ, error) {
 	return &MQ{
 		connection: conn,
 		channel:    ch,
+		queue:      queue.New(),
 	}, nil
 }
 
-func NewFromConnection(conn *amqp.Connection) (*MQ, error) {
+func NewFromConnection(conn *connection.Connection) (*MQ, error) {
 	ch, err := conn.Channel()
 	if err != nil {
 		return nil, err
@@ -41,7 +43,7 @@ func NewFromConnection(conn *amqp.Connection) (*MQ, error) {
 	}, nil
 }
 
-func (mq *MQ) Connection() *amqp.Connection {
+func (mq *MQ) Connection() *connection.Connection {
 	return mq.connection
 }
 

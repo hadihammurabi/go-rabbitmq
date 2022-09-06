@@ -1,6 +1,7 @@
 package gorabbitmq
 
 import (
+	"github.com/hadihammurabi/go-rabbitmq/connection"
 	"github.com/streadway/amqp"
 )
 
@@ -9,7 +10,7 @@ const (
 )
 
 type MQConfig struct {
-	Connection *MQConfigConnection
+	Connection *connection.Connection
 	Exchange   *MQConfigExchange
 }
 

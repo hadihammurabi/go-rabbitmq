@@ -1,16 +1,15 @@
 package gorabbitmq
 
 import (
+	"github.com/hadihammurabi/go-rabbitmq/connection"
 	queue "github.com/hadihammurabi/go-rabbitmq/queue"
-	"github.com/streadway/amqp"
 )
 
 type MQConfigBuilder struct {
-	ConnectionConfig *MQConfigConnection
-	Connection       *amqp.Connection
-	ExchangeConfig   *MQConfigExchange
-	QueueConfig      *queue.Queue
-	BindConfig       *MQConfigQueueBind
+	Connection     *connection.Connection
+	ExchangeConfig *MQConfigExchange
+	QueueConfig    *queue.Queue
+	BindConfig     *MQConfigQueueBind
 }
 
 func NewMQBuilder() *MQConfigBuilder {
@@ -18,13 +17,13 @@ func NewMQBuilder() *MQConfigBuilder {
 }
 
 func (builder *MQConfigBuilder) SetConnection(url string) *MQConfigBuilder {
-	builder.ConnectionConfig = &MQConfigConnection{
+	builder.Connection = &connection.Connection{
 		URL: url,
 	}
 	return builder
 }
 
-func (builder *MQConfigBuilder) WithConnection(conn *amqp.Connection) *MQConfigBuilder {
+func (builder *MQConfigBuilder) WithConnection(conn *connection.Connection) *MQConfigBuilder {
 	builder.Connection = conn
 	return builder
 }
@@ -49,7 +48,7 @@ func (builder *MQConfigBuilder) Build() (*MQ, error) {
 	var err error
 
 	if builder.Connection == nil {
-		mq, err = New(builder.ConnectionConfig.URL)
+		mq, err = New(builder.Connection.URL)
 		if err != nil {
 			return nil, err
 		}
