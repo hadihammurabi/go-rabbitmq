@@ -2,6 +2,7 @@ package gorabbitmq
 
 import (
 	"github.com/hadihammurabi/go-rabbitmq/connection"
+	"github.com/hadihammurabi/go-rabbitmq/exchange"
 	"github.com/streadway/amqp"
 )
 
@@ -11,7 +12,7 @@ const (
 
 type MQConfig struct {
 	Connection *connection.Connection
-	Exchange   *MQConfigExchange
+	Exchange   *exchange.Exchange
 }
 
 type MQConfigConsume struct {

@@ -4,6 +4,7 @@ import (
 	"github.com/streadway/amqp"
 
 	"github.com/hadihammurabi/go-rabbitmq/connection"
+	"github.com/hadihammurabi/go-rabbitmq/exchange"
 	"github.com/hadihammurabi/go-rabbitmq/queue"
 )
 
@@ -74,8 +75,8 @@ func (mq *MQ) QueueBind(config *MQConfigQueueBind) error {
 	return nil
 }
 
-func (mq *MQ) ExchangeDeclare(config *MQConfigExchange) error {
-	err := NewExchange(mq.channel, config)
+func (mq *MQ) ExchangeDeclare(config *exchange.Exchange) error {
+	err := exchange.New().From(config).Declare()
 	if err != nil {
 		return err
 	}
