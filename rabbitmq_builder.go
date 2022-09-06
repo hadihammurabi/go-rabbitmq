@@ -49,12 +49,12 @@ func (builder *MQConfigBuilder) Build() (MQ, error) {
 	var err error
 
 	if builder.Connection == nil {
-		mq, err = NewMQ(builder.ConnectionConfig.URL)
+		mq, err = New(builder.ConnectionConfig.URL)
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		mq, err = NewMQFromConnection(builder.Connection)
+		mq, err = NewFromConnection(builder.Connection)
 		if err != nil {
 			return nil, err
 		}

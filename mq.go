@@ -12,7 +12,7 @@ type mqDefault struct {
 	queue      amqp.Queue
 }
 
-func NewMQ(url string) (MQ, error) {
+func New(url string) (MQ, error) {
 	conn, err := NewConnection(NewConnectionOptions().SetURL(url))
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func NewMQ(url string) (MQ, error) {
 	}, nil
 }
 
-func NewMQFromConnection(conn *amqp.Connection) (MQ, error) {
+func NewFromConnection(conn *amqp.Connection) (MQ, error) {
 	ch, err := conn.Channel()
 	if err != nil {
 		return nil, err

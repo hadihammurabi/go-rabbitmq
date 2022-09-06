@@ -21,7 +21,7 @@ func failOnError(err error, msg string) {
 }
 
 func main() {
-	mq, err := rabbitmq.NewMQ("amqp://guest:guest@localhost:5672/")
+	mq, err := rabbitmq.New("amqp://guest:guest@localhost:5672/")
 	failOnError(err, fmt.Sprintf("%v", err))
 	defer mq.Close()
 
