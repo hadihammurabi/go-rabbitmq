@@ -38,7 +38,9 @@ Too many `false` in there, which should be set as the default value.
 
 By using [this](.) module, we can do same think with less code. See above.
 ```go
-q, err := mq.DeclareQueue(rabbitmq.NewQueueOptions().SetName("hello"))
+q, err := mq.Queue().
+	WithName("hello").
+	Declare()
 failOnError(err, "Failed to declare a queue")
 ```
 No need to write `false`, because it is the default value.
