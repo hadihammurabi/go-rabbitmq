@@ -29,7 +29,7 @@ func main() {
 	failOnError(err, fmt.Sprintf("%v", err))
 	defer del.Close()
 
-	_, err = del.QueueDeclare(&queue.MQConfigQueue{
+	_, err = del.QueueDeclare(&queue.Options{
 		Name: "hello",
 	})
 	failOnError(err, fmt.Sprintf("%v", err))

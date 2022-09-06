@@ -12,7 +12,7 @@ const (
 type MQ interface {
 	Connection() *amqp.Connection
 	Channel() *amqp.Channel
-	QueueDeclare(*queue.MQConfigQueue) (amqp.Queue, error)
+	QueueDeclare(*queue.Options) (amqp.Queue, error)
 	Queue() amqp.Queue
 	QueueBind(*MQConfigQueueBind) error
 	ExchangeDeclare(*MQConfigExchange) error

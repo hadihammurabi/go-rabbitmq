@@ -25,7 +25,7 @@ func main() {
 	failOnError(err, fmt.Sprintf("%v", err))
 	defer mq.Close()
 
-	_, err = mq.QueueDeclare(&queue.MQConfigQueue{
+	_, err = mq.QueueDeclare(&queue.Options{
 		Name: "hello",
 	})
 	failOnError(err, fmt.Sprintf("%v", err))

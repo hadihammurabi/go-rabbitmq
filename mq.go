@@ -53,7 +53,7 @@ func (mq *mqDefault) Queue() amqp.Queue {
 	return mq.queue
 }
 
-func (mq *mqDefault) QueueDeclare(config *queue.MQConfigQueue) (amqp.Queue, error) {
+func (mq *mqDefault) QueueDeclare(config *queue.Options) (amqp.Queue, error) {
 	q, err := queue.Builder().From(config).Build()
 	if err != nil {
 		return mq.queue, err

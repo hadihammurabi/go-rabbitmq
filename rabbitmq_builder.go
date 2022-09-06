@@ -9,7 +9,7 @@ type MQConfigBuilder struct {
 	ConnectionConfig *MQConfigConnection
 	Connection       *amqp.Connection
 	ExchangeConfig   *MQConfigExchange
-	QueueConfig      *queue.MQConfigQueue
+	QueueConfig      *queue.Options
 	BindConfig       *MQConfigQueueBind
 }
 
@@ -34,7 +34,7 @@ func (builder *MQConfigBuilder) SetExchange(config *MQConfigExchange) *MQConfigB
 	return builder
 }
 
-func (builder *MQConfigBuilder) SetQueue(config *queue.MQConfigQueue) *MQConfigBuilder {
+func (builder *MQConfigBuilder) SetQueue(config *queue.Options) *MQConfigBuilder {
 	builder.QueueConfig = config
 	return builder
 }

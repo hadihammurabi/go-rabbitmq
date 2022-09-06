@@ -2,7 +2,7 @@ package gorabbitmq
 
 import "github.com/streadway/amqp"
 
-type MQConfigQueue struct {
+type Options struct {
 	Name             string `binding:"required"`
 	Durable          bool
 	DeleteWhenUnused bool
@@ -12,11 +12,11 @@ type MQConfigQueue struct {
 	Channel          *amqp.Channel
 }
 
-func Builder() *MQConfigQueue {
-	return &MQConfigQueue{}
+func Builder() *Options {
+	return &Options{}
 }
 
-func (config *MQConfigQueue) From(queue *MQConfigQueue) *MQConfigQueue {
+func (config *Options) From(queue *Options) *Options {
 	config.Name = queue.Name
 	config.Durable = queue.Durable
 	config.DeleteWhenUnused = queue.DeleteWhenUnused
@@ -27,42 +27,42 @@ func (config *MQConfigQueue) From(queue *MQConfigQueue) *MQConfigQueue {
 	return config
 }
 
-func (config *MQConfigQueue) WithChannel(Channel *amqp.Channel) *MQConfigQueue {
+func (config *Options) WithChannel(Channel *amqp.Channel) *Options {
 	config.Channel = Channel
 	return config
 }
 
-func (config *MQConfigQueue) WithName(Name string) *MQConfigQueue {
+func (config *Options) WithName(Name string) *Options {
 	config.Name = Name
 	return config
 }
 
-func (config *MQConfigQueue) WithDurable(Durable bool) *MQConfigQueue {
+func (config *Options) WithDurable(Durable bool) *Options {
 	config.Durable = Durable
 	return config
 }
 
-func (config *MQConfigQueue) WithDeleteWhenUnused(DeleteWhenUnused bool) *MQConfigQueue {
+func (config *Options) WithDeleteWhenUnused(DeleteWhenUnused bool) *Options {
 	config.DeleteWhenUnused = DeleteWhenUnused
 	return config
 }
 
-func (config *MQConfigQueue) WithExclusive(Exclusive bool) *MQConfigQueue {
+func (config *Options) WithExclusive(Exclusive bool) *Options {
 	config.Exclusive = Exclusive
 	return config
 }
 
-func (config *MQConfigQueue) WithNoWait(NoWait bool) *MQConfigQueue {
+func (config *Options) WithNoWait(NoWait bool) *Options {
 	config.NoWait = NoWait
 	return config
 }
 
-func (config *MQConfigQueue) WithArgs(Args amqp.Table) *MQConfigQueue {
+func (config *Options) WithArgs(Args amqp.Table) *Options {
 	config.Args = Args
 	return config
 }
 
-func (config *MQConfigQueue) Build() (amqp.Queue, error) {
+func (config *Options) Build() (amqp.Queue, error) {
 	return config.Channel.QueueDeclare(
 		config.Name,
 		config.Durable,

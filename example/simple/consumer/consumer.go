@@ -22,7 +22,7 @@ func main() {
 	failOnError(err, "Failed to create a MQ")
 	defer mq.Close()
 
-	_, err = mq.QueueDeclare(&queue.MQConfigQueue{
+	_, err = mq.QueueDeclare(&queue.Options{
 		Name: "hello",
 	})
 	failOnError(err, "Failed to declare a queue")
