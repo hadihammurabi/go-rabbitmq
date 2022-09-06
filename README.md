@@ -49,9 +49,8 @@ So, to conclude, this module makes it easy to use amqp for rabbitmq.
 
 # Features
 * Built on top of famous [AMQP connector](https://github.com/streadway/amqp) in Go.
-* All object reference like connection, channel, queue, etc are original by the AMQP connector (no monkey patch or any modifications).
-* It has construction API and API with builder pattern.
-* Does not modify incoming messages, so it can be controlled manually.
+* Connection, channel, queue, or any original objects by the AMQP connector are publicly exposed, so that can be controlled manually.
+* It use construction API.
 * Reuse connection to create MQ stuff.
 
 # Usage
@@ -74,7 +73,7 @@ import (
 ## Connect to RabbitMQ
 It can do as below.
 ```go
-mq, err := rabbitmq.NewMQ("amqp://guest:guest@localhost:5672/")
+mq, err := rabbitmq.New("amqp://guest:guest@localhost:5672/")
 if err != nil {
  log.Fatal(err)
 }
@@ -87,7 +86,9 @@ defer mq.Close()
 Queue declaration can be done like this, after connecting to mq of course.
 > It only connects to the queue if the queue exists or create one if it doesn't exist. (RabbitMQ behavior)
 ```go
-q, err := mq.DeclareQueue(rabbitmq.NewQueueOptions().SetName("hello"))
+q, err := mq.Queue().
+	WithName("hello").
+	Declare()
 if err != nil {
  log.Fatal(err)
 }
@@ -96,7 +97,10 @@ if err != nil {
 ## Declare Exchange
 Exchange declaration can be done like this, after connecting to mq of course.
 ```go
-err := mq.DeclareExchange(rabbitmq.NewExchangeOptions().SetName("hello").SetType(rabbitmq.ExchangeTypeFanout))
+err := mq.Exchange().
+	WithName("hello").
+	WithType(exchange.TypeFanout)).
+	Declare()
 if err != nil {
  log.Fatal(err)
 }
@@ -106,7 +110,9 @@ if err != nil {
 Every message published to exchange will be distributed to every bound queue.
 To bind queue with exchange, follow example below.
 ```go
-err := mq.QueueBind(rabbitmq.NewQueueBindOptions().SetName("hello").SetExchange("hello"))
+err := q.Binding().
+	WithExchange("hello").
+	Bind()
 if err != nil {
  log.Fatal(err)
 }
