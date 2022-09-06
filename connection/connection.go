@@ -28,6 +28,10 @@ func (c *Connection) Close() error {
 	return c.connection.Close()
 }
 
+func (c *Connection) Raw() *amqp.Connection {
+	return c.connection
+}
+
 func (c *Connection) Dial() (*Connection, error) {
 	amqpConn, err := amqp.Dial(c.URL)
 	if err != nil {
