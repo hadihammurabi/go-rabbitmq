@@ -26,7 +26,7 @@ func main() {
 	failOnError(err, fmt.Sprintf("%v", err))
 	defer del.Close()
 
-	_, err = del.Queue().
+	q, err := del.Queue().
 		WithName("hello").
 		WithChannel(del.Channel()).
 		Declare()
@@ -34,7 +34,7 @@ func main() {
 
 	log.Println(" [*] Waiting for messages. To exit press CTRL+C")
 
-	results, err := del.Consume(nil)
+	results, err := q.Consumer().Consume()
 	failOnError(err, "Failed to register a consumer")
 
 	for result := range results {

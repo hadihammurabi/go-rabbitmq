@@ -21,20 +21,18 @@ func failOnError(err error, msg string) {
 }
 
 func main() {
-	mq, err := rabbitmq.New("amqp://guest:guest@localhost:5672/")
+	mq, err := rabbitmq.New("amqp://formiadmin:7shZA7HfDFAZ8WBa@rabbitmq-amqp.engine.159.223.41.6.sslip.io:30904/")
 	failOnError(err, "Failed to create a MQ")
 	defer mq.Close()
 
 	err = mq.Exchange().
 		WithName("hello").
 		WithType(exchange.TypeDirect).
-		WithChannel(mq.Channel()).
 		Declare()
 	failOnError(err, "Failed to create a channel")
 
 	q, err := mq.Queue().
 		WithName("hello").
-		WithChannel(mq.Channel()).
 		Declare()
 	failOnError(err, "Failed to create a queue")
 

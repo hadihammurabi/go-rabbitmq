@@ -17,11 +17,11 @@ func failOnError(err error, msg string) {
 }
 
 func main() {
-	mq, err := rabbitmq.New("amqp://formiadmin:7shZA7HfDFAZ8WBa@rabbitmq-amqp.engine.159.223.41.6.sslip.io:30904/")
+	mq, err := rabbitmq.New("amqp://guest:guest@localhost:5672/")
 	failOnError(err, "Failed to create a MQ")
 	defer mq.Close()
 
-	_, err = mq.Queue().
+	q, err := mq.Queue().
 		WithName("hello").
 		WithChannel(mq.Channel()).
 		Declare()
@@ -29,7 +29,7 @@ func main() {
 
 	log.Println(" [*] Waiting for messages. To exit press CTRL+C")
 
-	results, err := mq.Consume(nil)
+	results, err := q.Consumer().Consume()
 	failOnError(err, "Failed to register a consumer")
 
 	for result := range results {

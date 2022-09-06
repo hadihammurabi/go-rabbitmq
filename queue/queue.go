@@ -18,6 +18,7 @@ type Queue struct {
 	Channel          *amqp.Channel
 
 	bindOptions *BindOptions
+	consumer    *Consumer
 }
 
 func New(Channel *amqp.Channel) *Queue {
@@ -100,6 +101,9 @@ func (config *Queue) Declare() (*Queue, error) {
 		WithChannel(config.Channel).
 		WithQueue(config)
 
+	config.consumer = NewConsumer().
+		WithQueue(config)
+
 	if err != nil {
 		return nil, err
 	}
@@ -110,4 +114,8 @@ func (config *Queue) Declare() (*Queue, error) {
 
 func (config *Queue) Binding() *BindOptions {
 	return config.bindOptions
+}
+
+func (config *Queue) Consumer() *Consumer {
+	return config.consumer
 }

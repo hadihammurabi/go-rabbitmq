@@ -72,27 +72,6 @@ func (mq *MQ) Publish(publish *MQConfigPublish) error {
 	)
 }
 
-func (mq *MQ) Consume(consume *MQConfigConsume) (<-chan amqp.Delivery, error) {
-	if consume == nil {
-		consume = &MQConfigConsume{}
-	}
-
-	consumer, err := mq.channel.Consume(
-		mq.queue.Name,
-		consume.Consumer,
-		consume.AutoACK,
-		consume.Exclusive,
-		consume.NoLocal,
-		consume.NoWait,
-		consume.Args,
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return consumer, nil
-}
-
 func (mq *MQ) Close() {
 	mq.channel.Close()
 	mq.connection.Close()
