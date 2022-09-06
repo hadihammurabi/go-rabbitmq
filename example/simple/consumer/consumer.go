@@ -8,6 +8,7 @@ import (
 	"log"
 
 	rabbitmq "github.com/hadihammurabi/go-rabbitmq"
+	queue "github.com/hadihammurabi/go-rabbitmq/queue"
 )
 
 func failOnError(err error, msg string) {
@@ -21,7 +22,9 @@ func main() {
 	failOnError(err, "Failed to create a MQ")
 	defer mq.Close()
 
-	_, err = mq.QueueDeclare(rabbitmq.NewQueueOptions().SetName("hello"))
+	_, err = mq.QueueDeclare(&queue.MQConfigQueue{
+		Name: "hello",
+	})
 	failOnError(err, "Failed to declare a queue")
 
 	log.Println(" [*] Waiting for messages. To exit press CTRL+C")

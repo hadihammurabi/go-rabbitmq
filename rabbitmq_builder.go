@@ -1,12 +1,15 @@
 package gorabbitmq
 
-import "github.com/streadway/amqp"
+import (
+	queue "github.com/hadihammurabi/go-rabbitmq/queue"
+	"github.com/streadway/amqp"
+)
 
 type MQConfigBuilder struct {
 	ConnectionConfig *MQConfigConnection
 	Connection       *amqp.Connection
 	ExchangeConfig   *MQConfigExchange
-	QueueConfig      *MQConfigQueue
+	QueueConfig      *queue.MQConfigQueue
 	BindConfig       *MQConfigQueueBind
 }
 
@@ -31,7 +34,7 @@ func (builder *MQConfigBuilder) SetExchange(config *MQConfigExchange) *MQConfigB
 	return builder
 }
 
-func (builder *MQConfigBuilder) SetQueue(config *MQConfigQueue) *MQConfigBuilder {
+func (builder *MQConfigBuilder) SetQueue(config *queue.MQConfigQueue) *MQConfigBuilder {
 	builder.QueueConfig = config
 	return builder
 }

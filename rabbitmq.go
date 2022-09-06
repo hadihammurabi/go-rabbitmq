@@ -1,6 +1,9 @@
 package gorabbitmq
 
-import "github.com/streadway/amqp"
+import (
+	queue "github.com/hadihammurabi/go-rabbitmq/queue"
+	"github.com/streadway/amqp"
+)
 
 const (
 	ChannelDefault string = "default"
@@ -9,7 +12,7 @@ const (
 type MQ interface {
 	Connection() *amqp.Connection
 	Channel() *amqp.Channel
-	QueueDeclare(*MQConfigQueue) (amqp.Queue, error)
+	QueueDeclare(*queue.MQConfigQueue) (amqp.Queue, error)
 	Queue() amqp.Queue
 	QueueBind(*MQConfigQueueBind) error
 	ExchangeDeclare(*MQConfigExchange) error

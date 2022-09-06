@@ -10,6 +10,7 @@ import (
 	"sync"
 
 	rabbitmq "github.com/hadihammurabi/go-rabbitmq"
+	queue "github.com/hadihammurabi/go-rabbitmq/queue"
 	"github.com/streadway/amqp"
 )
 
@@ -24,7 +25,9 @@ func main() {
 	failOnError(err, fmt.Sprintf("%v", err))
 	defer mq.Close()
 
-	_, err = mq.QueueDeclare(rabbitmq.NewQueueOptions().SetName("hello"))
+	_, err = mq.QueueDeclare(&queue.MQConfigQueue{
+		Name: "hello",
+	})
 	failOnError(err, fmt.Sprintf("%v", err))
 
 	var wg sync.WaitGroup
