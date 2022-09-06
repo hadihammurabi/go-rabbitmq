@@ -141,7 +141,7 @@ To consume messages in queue can do like this.
 
 > The following code will run forever to listen for new message in queue.
 ```go
-msgs, err := mq.Consume(nil)
+msgs, err := mq.Consumer().Consume()
 if err != nil {
  log.Fatal(err)
 }
