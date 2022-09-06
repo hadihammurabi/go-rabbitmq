@@ -9,7 +9,7 @@ type MQConfigBuilder struct {
 	ConnectionConfig *MQConfigConnection
 	Connection       *amqp.Connection
 	ExchangeConfig   *MQConfigExchange
-	QueueConfig      *queue.Options
+	QueueConfig      *queue.Queue
 	BindConfig       *MQConfigQueueBind
 }
 
@@ -34,7 +34,7 @@ func (builder *MQConfigBuilder) SetExchange(config *MQConfigExchange) *MQConfigB
 	return builder
 }
 
-func (builder *MQConfigBuilder) SetQueue(config *queue.Options) *MQConfigBuilder {
+func (builder *MQConfigBuilder) SetQueue(config *queue.Queue) *MQConfigBuilder {
 	builder.QueueConfig = config
 	return builder
 }
@@ -44,8 +44,8 @@ func (builder *MQConfigBuilder) SetBind(config *MQConfigQueueBind) *MQConfigBuil
 	return builder
 }
 
-func (builder *MQConfigBuilder) Build() (MQ, error) {
-	var mq MQ
+func (builder *MQConfigBuilder) Build() (*MQ, error) {
+	var mq *MQ
 	var err error
 
 	if builder.Connection == nil {

@@ -9,7 +9,6 @@ import (
 	"log"
 
 	rabbitmq "github.com/hadihammurabi/go-rabbitmq"
-	queue "github.com/hadihammurabi/go-rabbitmq/queue"
 )
 
 func failOnError(err error, msg string) {
@@ -27,9 +26,10 @@ func main() {
 	failOnError(err, fmt.Sprintf("%v", err))
 	defer del.Close()
 
-	_, err = del.QueueDeclare(&queue.Options{
-		Name: "hello",
-	})
+	_, err = del.Queue().
+		WithName("hello").
+		WithChannel(del.Channel()).
+		Declare()
 	failOnError(err, "Failed to declare a queue")
 
 	log.Println(" [*] Waiting for messages. To exit press CTRL+C")

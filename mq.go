@@ -6,13 +6,13 @@ import (
 	queue "github.com/hadihammurabi/go-rabbitmq/queue"
 )
 
-type mqDefault struct {
+type MQ struct {
 	connection *amqp.Connection
 	channel    *amqp.Channel
-	queue      amqp.Queue
+	queue      *queue.Queue
 }
 
-func New(url string) (MQ, error) {
+func New(url string) (*MQ, error) {
 	conn, err := NewConnection(NewConnectionOptions().SetURL(url))
 	if err != nil {
 		return nil, err
@@ -23,47 +23,47 @@ func New(url string) (MQ, error) {
 		return nil, err
 	}
 
-	return &mqDefault{
+	return &MQ{
 		connection: conn,
 		channel:    ch,
 	}, nil
 }
 
-func NewFromConnection(conn *amqp.Connection) (MQ, error) {
+func NewFromConnection(conn *amqp.Connection) (*MQ, error) {
 	ch, err := conn.Channel()
 	if err != nil {
 		return nil, err
 	}
 
-	return &mqDefault{
+	return &MQ{
 		connection: conn,
 		channel:    ch,
 	}, nil
 }
 
-func (mq *mqDefault) Connection() *amqp.Connection {
+func (mq *MQ) Connection() *amqp.Connection {
 	return mq.connection
 }
 
-func (mq *mqDefault) Channel() *amqp.Channel {
+func (mq *MQ) Channel() *amqp.Channel {
 	return mq.channel
 }
 
-func (mq *mqDefault) Queue() amqp.Queue {
+func (mq *MQ) Queue() *queue.Queue {
 	return mq.queue
 }
 
-func (mq *mqDefault) QueueDeclare(config *queue.Options) (amqp.Queue, error) {
-	q, err := queue.Builder().From(config).Build()
+func (mq *MQ) QueueDeclare(config *queue.Queue) (*queue.Queue, error) {
+	q, err := queue.New().From(config).Declare()
 	if err != nil {
-		return mq.queue, err
+		return nil, err
 	}
 
 	mq.queue = q
 	return mq.queue, nil
 }
 
-func (mq *mqDefault) QueueBind(config *MQConfigQueueBind) error {
+func (mq *MQ) QueueBind(config *MQConfigQueueBind) error {
 	err := NewQueueBind(mq.channel, config)
 	if err != nil {
 		return err
@@ -72,7 +72,7 @@ func (mq *mqDefault) QueueBind(config *MQConfigQueueBind) error {
 	return nil
 }
 
-func (mq *mqDefault) ExchangeDeclare(config *MQConfigExchange) error {
+func (mq *MQ) ExchangeDeclare(config *MQConfigExchange) error {
 	err := NewExchange(mq.channel, config)
 	if err != nil {
 		return err
@@ -81,7 +81,7 @@ func (mq *mqDefault) ExchangeDeclare(config *MQConfigExchange) error {
 	return nil
 }
 
-func (mq *mqDefault) Publish(publish *MQConfigPublish) error {
+func (mq *MQ) Publish(publish *MQConfigPublish) error {
 	return mq.channel.Publish(
 		publish.Exchange,
 		publish.RoutingKey,
@@ -91,7 +91,7 @@ func (mq *mqDefault) Publish(publish *MQConfigPublish) error {
 	)
 }
 
-func (mq *mqDefault) Consume(consume *MQConfigConsume) (<-chan amqp.Delivery, error) {
+func (mq *MQ) Consume(consume *MQConfigConsume) (<-chan amqp.Delivery, error) {
 	if consume == nil {
 		consume = &MQConfigConsume{}
 	}
@@ -112,7 +112,7 @@ func (mq *mqDefault) Consume(consume *MQConfigConsume) (<-chan amqp.Delivery, er
 	return consumer, nil
 }
 
-func (mq *mqDefault) Close() {
+func (mq *MQ) Close() {
 	mq.channel.Close()
 	mq.connection.Close()
 }

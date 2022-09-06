@@ -1,8 +1,10 @@
-package gorabbitmq
+package queue
 
 import "github.com/streadway/amqp"
 
-type Options struct {
+type Queue struct {
+	queue amqp.Queue
+
 	Name             string `binding:"required"`
 	Durable          bool
 	DeleteWhenUnused bool
@@ -12,11 +14,11 @@ type Options struct {
 	Channel          *amqp.Channel
 }
 
-func Builder() *Options {
-	return &Options{}
+func New() *Queue {
+	return &Queue{}
 }
 
-func (config *Options) From(queue *Options) *Options {
+func (config *Queue) From(queue *Queue) *Queue {
 	config.Name = queue.Name
 	config.Durable = queue.Durable
 	config.DeleteWhenUnused = queue.DeleteWhenUnused
@@ -27,43 +29,43 @@ func (config *Options) From(queue *Options) *Options {
 	return config
 }
 
-func (config *Options) WithChannel(Channel *amqp.Channel) *Options {
+func (config *Queue) WithChannel(Channel *amqp.Channel) *Queue {
 	config.Channel = Channel
 	return config
 }
 
-func (config *Options) WithName(Name string) *Options {
+func (config *Queue) WithName(Name string) *Queue {
 	config.Name = Name
 	return config
 }
 
-func (config *Options) WithDurable(Durable bool) *Options {
+func (config *Queue) WithDurable(Durable bool) *Queue {
 	config.Durable = Durable
 	return config
 }
 
-func (config *Options) WithDeleteWhenUnused(DeleteWhenUnused bool) *Options {
+func (config *Queue) WithDeleteWhenUnused(DeleteWhenUnused bool) *Queue {
 	config.DeleteWhenUnused = DeleteWhenUnused
 	return config
 }
 
-func (config *Options) WithExclusive(Exclusive bool) *Options {
+func (config *Queue) WithExclusive(Exclusive bool) *Queue {
 	config.Exclusive = Exclusive
 	return config
 }
 
-func (config *Options) WithNoWait(NoWait bool) *Options {
+func (config *Queue) WithNoWait(NoWait bool) *Queue {
 	config.NoWait = NoWait
 	return config
 }
 
-func (config *Options) WithArgs(Args amqp.Table) *Options {
+func (config *Queue) WithArgs(Args amqp.Table) *Queue {
 	config.Args = Args
 	return config
 }
 
-func (config *Options) Build() (amqp.Queue, error) {
-	return config.Channel.QueueDeclare(
+func (config *Queue) Declare() (*Queue, error) {
+	q, err := config.Channel.QueueDeclare(
 		config.Name,
 		config.Durable,
 		config.DeleteWhenUnused,
@@ -71,4 +73,11 @@ func (config *Options) Build() (amqp.Queue, error) {
 		config.NoWait,
 		config.Args,
 	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	config.queue = q
+	return config, nil
 }
