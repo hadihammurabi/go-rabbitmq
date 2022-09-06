@@ -12,6 +12,7 @@ type MQ struct {
 	connection *connection.Connection
 	channel    *amqp.Channel
 	queue      *queue.Queue
+	exchange   *exchange.Exchange
 }
 
 func New(url string) (*MQ, error) {
@@ -29,6 +30,7 @@ func New(url string) (*MQ, error) {
 		connection: conn,
 		channel:    ch,
 		queue:      queue.New(),
+		exchange:   exchange.New(),
 	}, nil
 }
 
@@ -56,32 +58,8 @@ func (mq *MQ) Queue() *queue.Queue {
 	return mq.queue
 }
 
-func (mq *MQ) QueueDeclare(config *queue.Queue) (*queue.Queue, error) {
-	q, err := queue.New().From(config).Declare()
-	if err != nil {
-		return nil, err
-	}
-
-	mq.queue = q
-	return mq.queue, nil
-}
-
-func (mq *MQ) QueueBind(config *MQConfigQueueBind) error {
-	err := NewQueueBind(mq.channel, config)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (mq *MQ) ExchangeDeclare(config *exchange.Exchange) error {
-	err := exchange.New().From(config).Declare()
-	if err != nil {
-		return err
-	}
-
-	return nil
+func (mq *MQ) Exchange() *exchange.Exchange {
+	return mq.exchange
 }
 
 func (mq *MQ) Publish(publish *MQConfigPublish) error {

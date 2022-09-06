@@ -1,6 +1,8 @@
 package queue
 
-import "github.com/streadway/amqp"
+import (
+	"github.com/streadway/amqp"
+)
 
 type Queue struct {
 	queue amqp.Queue
@@ -12,10 +14,14 @@ type Queue struct {
 	NoWait           bool
 	Args             amqp.Table
 	Channel          *amqp.Channel
+
+	bindOptions *BindOptions
 }
 
 func New() *Queue {
-	return &Queue{}
+	return &Queue{
+		bindOptions: &BindOptions{},
+	}
 }
 
 func (config *Queue) From(queue *Queue) *Queue {
@@ -26,6 +32,7 @@ func (config *Queue) From(queue *Queue) *Queue {
 	config.NoWait = queue.NoWait
 	config.Args = queue.Args
 	config.Channel = queue.Channel
+	config.bindOptions = queue.bindOptions
 	return config
 }
 
@@ -78,10 +85,16 @@ func (config *Queue) Declare() (*Queue, error) {
 		config.Args,
 	)
 
+	config.bindOptions = NewBind(config.Channel, config)
+
 	if err != nil {
 		return nil, err
 	}
 
 	config.queue = q
 	return config, nil
+}
+
+func (config *Queue) Binding() *BindOptions {
+	return config.bindOptions
 }

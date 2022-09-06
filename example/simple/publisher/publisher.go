@@ -10,6 +10,7 @@ import (
 	"sync"
 
 	rabbitmq "github.com/hadihammurabi/go-rabbitmq"
+	"github.com/hadihammurabi/go-rabbitmq/exchange"
 	"github.com/streadway/amqp"
 )
 
@@ -24,10 +25,22 @@ func main() {
 	failOnError(err, fmt.Sprintf("%v", err))
 	defer mq.Close()
 
-	_, err = mq.Queue().
+	err = mq.Exchange().
+		WithName("hello").
+		WithType(exchange.TypeDirect).
+		WithChannel(mq.Channel()).
+		Declare()
+	failOnError(err, fmt.Sprintf("%v", err))
+
+	q, err := mq.Queue().
 		WithName("hello").
 		WithChannel(mq.Channel()).
 		Declare()
+	failOnError(err, fmt.Sprintf("%v", err))
+
+	err = q.Binding().
+		WithExchange("hello").
+		Bind()
 	failOnError(err, fmt.Sprintf("%v", err))
 
 	var wg sync.WaitGroup

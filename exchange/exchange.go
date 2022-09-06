@@ -5,9 +5,9 @@ import "github.com/streadway/amqp"
 type Type string
 
 const (
-	ExchangeTypeDirect Type = "direct"
-	ExchangeTypeTopic  Type = "topic"
-	ExchangeTypeFanout Type = "fanout"
+	TypeDirect Type = "direct"
+	TypeTopic  Type = "topic"
+	TypeFanout Type = "fanout"
 )
 
 type Exchange struct {
