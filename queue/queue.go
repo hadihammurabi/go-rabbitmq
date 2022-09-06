@@ -1,6 +1,8 @@
 package queue
 
 import (
+	"errors"
+
 	"github.com/streadway/amqp"
 )
 
@@ -20,7 +22,11 @@ type Queue struct {
 
 func New() *Queue {
 	return &Queue{
-		bindOptions: &BindOptions{},
+		Durable:          false,
+		DeleteWhenUnused: false,
+		Exclusive:        false,
+		NoWait:           false,
+		bindOptions:      &BindOptions{},
 	}
 }
 
@@ -76,6 +82,10 @@ func (config *Queue) Raw() amqp.Queue {
 }
 
 func (config *Queue) Declare() (*Queue, error) {
+	if config.Channel == nil {
+		return nil, errors.New("channel is nil")
+	}
+
 	q, err := config.Channel.QueueDeclare(
 		config.Name,
 		config.Durable,
@@ -85,7 +95,9 @@ func (config *Queue) Declare() (*Queue, error) {
 		config.Args,
 	)
 
-	config.bindOptions = NewBind(config.Channel, config)
+	config.bindOptions = NewBind().
+		WithChannel(config.Channel).
+		WithQueue(config)
 
 	if err != nil {
 		return nil, err

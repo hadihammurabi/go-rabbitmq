@@ -1,6 +1,10 @@
 package exchange
 
-import "github.com/streadway/amqp"
+import (
+	"errors"
+
+	"github.com/streadway/amqp"
+)
 
 type Type string
 
@@ -78,6 +82,10 @@ func (config *Exchange) WithArgs(Args amqp.Table) *Exchange {
 }
 
 func (config *Exchange) Declare() error {
+	if config.Channel == nil {
+		return errors.New("channel is nil")
+	}
+
 	return config.Channel.ExchangeDeclare(
 		config.Name,
 		string(config.Type),

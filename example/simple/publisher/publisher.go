@@ -22,7 +22,7 @@ func failOnError(err error, msg string) {
 
 func main() {
 	mq, err := rabbitmq.New("amqp://guest:guest@localhost:5672/")
-	failOnError(err, fmt.Sprintf("%v", err))
+	failOnError(err, "Failed to create a MQ")
 	defer mq.Close()
 
 	err = mq.Exchange().
@@ -30,18 +30,18 @@ func main() {
 		WithType(exchange.TypeDirect).
 		WithChannel(mq.Channel()).
 		Declare()
-	failOnError(err, fmt.Sprintf("%v", err))
+	failOnError(err, "Failed to create a channel")
 
 	q, err := mq.Queue().
 		WithName("hello").
 		WithChannel(mq.Channel()).
 		Declare()
-	failOnError(err, fmt.Sprintf("%v", err))
+	failOnError(err, "Failed to create a queue")
 
 	err = q.Binding().
 		WithExchange("hello").
 		Bind()
-	failOnError(err, fmt.Sprintf("%v", err))
+	failOnError(err, "Failed to bind queue")
 
 	var wg sync.WaitGroup
 	max := 10
