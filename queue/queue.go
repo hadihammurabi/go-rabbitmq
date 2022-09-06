@@ -64,6 +64,10 @@ func (config *Queue) WithArgs(Args amqp.Table) *Queue {
 	return config
 }
 
+func (config *Queue) Raw() amqp.Queue {
+	return config.queue
+}
+
 func (config *Queue) Declare() (*Queue, error) {
 	q, err := config.Channel.QueueDeclare(
 		config.Name,
