@@ -11,7 +11,7 @@ import (
 
 	rabbitmq "github.com/hadihammurabi/go-rabbitmq"
 	"github.com/hadihammurabi/go-rabbitmq/exchange"
-	"github.com/streadway/amqp"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func failOnError(err error, msg string) {

@@ -1,6 +1,6 @@
 package connection
 
-import "github.com/streadway/amqp"
+import amqp "github.com/rabbitmq/amqp091-go"
 
 type Connection struct {
 	URL string

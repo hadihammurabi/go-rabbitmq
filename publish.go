@@ -1,6 +1,6 @@
 package gorabbitmq
 
-import "github.com/streadway/amqp"
+import amqp "github.com/rabbitmq/amqp091-go"
 
 type MQConfigPublish struct {
 	Exchange   string

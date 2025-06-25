@@ -34,7 +34,10 @@ func main() {
 
 	for result := range results {
 		log.Println("result: ", string(result.Body))
-		result.Ack(false)
+		err := result.Ack(false)
+		if err != nil {
+			continue
+		}
 	}
 	forever := make(chan bool)
 	<-forever

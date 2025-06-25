@@ -10,7 +10,7 @@ import (
 	"sync"
 
 	rabbitmq "github.com/hadihammurabi/go-rabbitmq"
-	"github.com/streadway/amqp"
+	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func failOnError(err error, msg string) {
