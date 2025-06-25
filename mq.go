@@ -46,6 +46,19 @@ func NewFromConnection(conn *connection.Connection) (*MQ, error) {
 	}, nil
 }
 
+func NewFromAMQP(conn *amqp.Connection) (*MQ, error) {
+	conn_ := connection.FromAMQP(conn)
+	ch, err := conn.Channel()
+	if err != nil {
+		return nil, err
+	}
+
+	return &MQ{
+		connection: conn_,
+		channel:    ch,
+	}, nil
+}
+
 func (mq *MQ) Connection() *connection.Connection {
 	return mq.connection
 }

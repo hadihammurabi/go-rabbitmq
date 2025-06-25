@@ -12,7 +12,7 @@ func New(url string) (*Connection, error) {
 	connData := &Connection{
 		URL: url,
 	}
-	conn, err := connData.Dial()
+	conn, err := connData.dial()
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +32,7 @@ func (c *Connection) Raw() *amqp.Connection {
 	return c.connection
 }
 
-func (c *Connection) Dial() (*Connection, error) {
+func (c *Connection) dial() (*Connection, error) {
 	amqpConn, err := amqp.Dial(c.URL)
 	if err != nil {
 		return nil, err
@@ -50,5 +50,11 @@ func From(connection *Connection) *Connection {
 	return &Connection{
 		connection: connection.connection,
 		URL:        connection.URL,
+	}
+}
+
+func FromAMQP(connection *amqp.Connection) *Connection {
+	return &Connection{
+		connection: connection,
 	}
 }
