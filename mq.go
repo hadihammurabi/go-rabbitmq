@@ -14,10 +14,21 @@ type MQ struct {
 	exchange   *exchange.Exchange
 }
 
-func New(url string) (*MQ, error) {
-	conn, err := connection.New(url)
-	if err != nil {
-		return nil, err
+func New(opts ...func(*NewOptions)) (*MQ, error) {
+	opt := NewOptions{}
+	opt.Apply(opts...)
+
+	var conn *connection.Connection
+	if opt.url != "" {
+		c, err := connection.New(opt.url)
+		if err != nil {
+			return nil, err
+		}
+		conn = c
+	} else if opt.connection != nil {
+		conn = connection.From(opt.connection)
+	} else if opt.amqp != nil {
+		conn = connection.FromAMQP(opt.amqp)
 	}
 
 	ch, err := conn.Channel()
@@ -30,31 +41,6 @@ func New(url string) (*MQ, error) {
 		channel:    ch,
 		queue:      queue.New(ch),
 		exchange:   exchange.New(ch),
-	}, nil
-}
-
-func NewFromConnection(conn *connection.Connection) (*MQ, error) {
-	ch, err := conn.Channel()
-	if err != nil {
-		return nil, err
-	}
-
-	return &MQ{
-		connection: conn,
-		channel:    ch,
-	}, nil
-}
-
-func NewFromAMQP(conn *amqp.Connection) (*MQ, error) {
-	conn_ := connection.FromAMQP(conn)
-	ch, err := conn.Channel()
-	if err != nil {
-		return nil, err
-	}
-
-	return &MQ{
-		connection: conn_,
-		channel:    ch,
 	}, nil
 }
 
